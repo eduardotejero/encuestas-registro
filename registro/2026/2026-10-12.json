@@ -1,0 +1,1044 @@
+{
+ "code_commit": "a756757af51763be95f68840018c2bf366916bd8",
+ "date": "2026-10-12",
+ "forecast": {
+  "as_of": "2026-10-11",
+  "assumptions": [
+   "Sumar (2023-07-23) -> Sumar x0.58 (medido en 2024-06-09, provincia a provincia): Podemos abandonó el grupo de Sumar en diciembre de 2023. El reparto del voto de 2023 se MIDE provincia a provincia con las europeas de 2024, donde Sumar y Podemos concurrieron por separado: peso_k(i) = s_k(i) / (s_Sumar(i) + s_Podemos(i)). El 0,65 es sólo el respaldo para una provincia sin dato.",
+   "Sumar (2023-07-23) -> Podemos x0.42 (medido en 2024-06-09, provincia a provincia): Mitad territorial del reparto anterior. Podemos tiene además perfil propio de nivel 2 (europeas 2024): esta fila sólo decide cuánta base de 2023 deja de ser de Sumar.",
+   "AA: sin resultado propio utilizable; se le presta el perfil territorial de Sumar y se le aplica una incertidumbre 2x más ancha.",
+   "Aliança.cat: sin resultado propio utilizable; se le presta el perfil territorial de Junts y se le aplica una incertidumbre 2x más ancha.",
+   "Podemos: sin resultado propio en la general anterior; perfil territorial medido en las europeas de 2024-06-09, con incertidumbre 1.5x más ancha.",
+   "SALF: sin resultado propio en la general anterior; perfil territorial medido en las europeas de 2024-06-09, con incertidumbre 1.5x más ancha.",
+   "Error nacional: constantes elegidas a mano (shock propio por tamaño de partido + shock común de bloque), no estimadas. El error histórico de las encuestas se usa sólo para verificar que siguen en su orden de magnitud (ver la fe de erratas del 12-oct-2026 en Metodología)."
+  ],
+  "barrier_alerts": [
+   {
+    "kind": "cerca de escaño",
+    "message": "AA (0.9 %) está a 0.1 puntos de voto nacional (0.7 en su territorio) de ganar un escaño en Sevilla (12 escaños).",
+    "national": 0.92,
+    "nearest_seat": [
+     {
+      "barrier_binds": false,
+      "distance": 0.13,
+      "distance_in_scope": 0.73,
+      "needed_national": 1.05,
+      "province": "Sevilla",
+      "seats": 12
+     },
+     {
+      "barrier_binds": false,
+      "distance": 0.36,
+      "distance_in_scope": 2.03,
+      "needed_national": 1.28,
+      "province": "Málaga",
+      "seats": 11
+     },
+     {
+      "barrier_binds": false,
+      "distance": 0.42,
+      "distance_in_scope": 2.37,
+      "needed_national": 1.34,
+      "province": "Cádiz",
+      "seats": 9
+     }
+    ],
+    "party": "AA",
+    "provinces_with_seat": [],
+    "seats_central": 0
+   },
+   {
+    "kind": "cerca de escaño",
+    "message": "Aliança.cat (1.0 %) está a 0.1 puntos de voto nacional (0.9 en su territorio) de ganar un escaño en Lleida (4 escaños).",
+    "national": 1.0,
+    "nearest_seat": [
+     {
+      "barrier_binds": false,
+      "distance": 0.13,
+      "distance_in_scope": 0.91,
+      "needed_national": 1.13,
+      "province": "Lleida",
+      "seats": 4
+     },
+     {
+      "barrier_binds": false,
+      "distance": 0.44,
+      "distance_in_scope": 3.07,
+      "needed_national": 1.44,
+      "province": "Tarragona",
+      "seats": 6
+     }
+    ],
+    "party": "Aliança.cat",
+    "provinces_with_seat": [
+     "Barcelona",
+     "Girona"
+    ],
+    "seats_central": 3
+   },
+   {
+    "kind": "cerca de escaño",
+    "message": "Sumar (6.3 %) está a 0.1 puntos de voto nacional de ganar un escaño en Illes Balears (8 escaños).",
+    "national": 6.29,
+    "nearest_seat": [
+     {
+      "barrier_binds": false,
+      "distance": 0.06,
+      "needed_national": 6.35,
+      "province": "Illes Balears",
+      "seats": 8
+     },
+     {
+      "barrier_binds": false,
+      "distance": 0.42,
+      "needed_national": 6.71,
+      "province": "Málaga",
+      "seats": 11
+     },
+     {
+      "barrier_binds": false,
+      "distance": 0.7,
+      "needed_national": 6.99,
+      "province": "Cádiz",
+      "seats": 9
+     }
+    ],
+    "party": "Sumar",
+    "provinces_with_seat": [
+     "Alicante",
+     "Barcelona",
+     "Madrid",
+     "Sevilla",
+     "Valencia"
+    ],
+    "seats_central": 9
+   }
+  ],
+  "baseline_election": "2023-07-23",
+  "bias_correction": {
+   "by_party": {
+    "AA": 0.651,
+    "Aliança.cat": 0.0,
+    "BNG": 0.839,
+    "CCa": 0.839,
+    "EH Bildu": 0.76,
+    "ERC": 0.781,
+    "Junts": 0.781,
+    "PNV": 0.76,
+    "PP": 0.813,
+    "PSOE": 0.813,
+    "Podemos": 0.813,
+    "SALF": 0.874,
+    "Sumar": 0.813,
+    "UPN": 0.839,
+    "Vox": 0.813
+   },
+   "min_polls": 5,
+   "note": "Parte del peso de la estimación que viene de casas con sesgo calibrado (al menos 5 encuestas comparables). El resto entra tal cual la publica la casa.",
+   "overall": 0.802
+  },
+  "blocs": {
+   "derecha": {
+    "mean": 195.5,
+    "median": 195,
+    "p10": 184,
+    "p90": 208,
+    "p_majority": 0.9865,
+    "parties": [
+     "PP",
+     "Vox"
+    ]
+   },
+   "derecha+SALF": {
+    "mean": 195.7,
+    "median": 195,
+    "p10": 184,
+    "p90": 208,
+    "p_majority": 0.9872,
+    "parties": [
+     "PP",
+     "Vox",
+     "SALF"
+    ]
+   },
+   "izquierda": {
+    "mean": 118.6,
+    "median": 119,
+    "p10": 106,
+    "p90": 131,
+    "p_majority": 0.0,
+    "parties": [
+     "PSOE",
+     "Sumar",
+     "Podemos"
+    ]
+   },
+   "izquierda+nacionalistas": {
+    "mean": 142.3,
+    "median": 143,
+    "p10": 130,
+    "p90": 154,
+    "p_majority": 0.0005,
+    "parties": [
+     "PSOE",
+     "Sumar",
+     "Podemos",
+     "ERC",
+     "EH Bildu",
+     "PNV",
+     "BNG",
+     "CCa"
+    ]
+   }
+  },
+  "conditional_on": "Las probabilidades son CONDICIONALES a que el error conjunto de las encuestas sea del tamaño del observado en 2015-2023. Un fallo sistémico del sector mayor que ése (todas las casas equivocándose en la misma dirección, más de lo que lo hicieron en esas cinco elecciones) no está dentro del modelo.",
+  "days_since_newest": 0,
+  "half_life_days": 10.0,
+  "majority": 176,
+  "model_fingerprint": "c22deb235019418b",
+  "model_version": "2026.10.4",
+  "n_polls": 24,
+  "n_sims": 10000,
+  "national": {
+   "AA": 0.92,
+   "Aliança.cat": 1.0,
+   "BNG": 0.92,
+   "CCa": 0.41,
+   "EH Bildu": 1.34,
+   "ERC": 2.15,
+   "Junts": 1.45,
+   "PNV": 0.95,
+   "PP": 31.66,
+   "PSOE": 26.79,
+   "Podemos": 3.21,
+   "SALF": 1.72,
+   "Sumar": 6.29,
+   "UPN": 0.18,
+   "Vox": 18.81
+  },
+  "newest_poll": "2026-10-11",
+  "profiles": [
+   {
+    "donor": "Sumar",
+    "level": 3,
+    "level_name": "donante",
+    "party": "AA",
+    "source": "donor:Sumar",
+    "uncertainty_factor": 2.0
+   },
+   {
+    "donor": "Junts",
+    "level": 3,
+    "level_name": "donante",
+    "party": "Aliança.cat",
+    "source": "donor:Junts",
+    "uncertainty_factor": 2.0
+   },
+   {
+    "donor": null,
+    "level": 1,
+    "level_name": "general anterior",
+    "party": "BNG",
+    "source": "general:2023-07-23",
+    "uncertainty_factor": 1.0
+   },
+   {
+    "donor": null,
+    "level": 1,
+    "level_name": "general anterior",
+    "party": "CCa",
+    "source": "general:2023-07-23",
+    "uncertainty_factor": 1.0
+   },
+   {
+    "donor": null,
+    "level": 1,
+    "level_name": "general anterior",
+    "party": "EH Bildu",
+    "source": "general:2023-07-23",
+    "uncertainty_factor": 1.0
+   },
+   {
+    "donor": null,
+    "level": 1,
+    "level_name": "general anterior",
+    "party": "ERC",
+    "source": "general:2023-07-23",
+    "uncertainty_factor": 1.0
+   },
+   {
+    "donor": null,
+    "level": 1,
+    "level_name": "general anterior",
+    "party": "Junts",
+    "source": "general:2023-07-23",
+    "uncertainty_factor": 1.0
+   },
+   {
+    "donor": null,
+    "level": 1,
+    "level_name": "general anterior",
+    "party": "PNV",
+    "source": "general:2023-07-23",
+    "uncertainty_factor": 1.0
+   },
+   {
+    "donor": null,
+    "level": 1,
+    "level_name": "general anterior",
+    "party": "PP",
+    "source": "general:2023-07-23",
+    "uncertainty_factor": 1.0
+   },
+   {
+    "donor": null,
+    "level": 1,
+    "level_name": "general anterior",
+    "party": "PSOE",
+    "source": "general:2023-07-23",
+    "uncertainty_factor": 1.0
+   },
+   {
+    "donor": null,
+    "level": 2,
+    "level_name": "otra convocatoria",
+    "party": "Podemos",
+    "source": "europeas:2024-06-09",
+    "uncertainty_factor": 1.5
+   },
+   {
+    "donor": null,
+    "level": 2,
+    "level_name": "otra convocatoria",
+    "party": "SALF",
+    "source": "europeas:2024-06-09",
+    "uncertainty_factor": 1.5
+   },
+   {
+    "donor": null,
+    "level": 1,
+    "level_name": "general anterior",
+    "party": "Sumar",
+    "source": "general:2023-07-23",
+    "uncertainty_factor": 1.0
+   },
+   {
+    "donor": null,
+    "level": 1,
+    "level_name": "general anterior",
+    "party": "UPN",
+    "source": "general:2023-07-23",
+    "uncertainty_factor": 1.0
+   },
+   {
+    "donor": null,
+    "level": 1,
+    "level_name": "general anterior",
+    "party": "Vox",
+    "source": "general:2023-07-23",
+    "uncertainty_factor": 1.0
+   }
+  ],
+  "regime": "disperso",
+  "seats": [
+   {
+    "max": 166,
+    "mean": 130.2,
+    "median": 130,
+    "min": 92,
+    "p10": 118,
+    "p2_5": 112,
+    "p90": 143,
+    "p97_5": 149,
+    "party": "PP"
+   },
+   {
+    "max": 143,
+    "mean": 107.1,
+    "median": 107,
+    "min": 64,
+    "p10": 95,
+    "p2_5": 88,
+    "p90": 119,
+    "p97_5": 125,
+    "party": "PSOE"
+   },
+   {
+    "max": 92,
+    "mean": 65.3,
+    "median": 65,
+    "min": 39,
+    "p10": 57,
+    "p2_5": 53,
+    "p90": 74,
+    "p97_5": 79,
+    "party": "Vox"
+   },
+   {
+    "max": 30,
+    "mean": 8.9,
+    "median": 9,
+    "min": 0,
+    "p10": 4,
+    "p2_5": 3,
+    "p90": 14,
+    "p97_5": 18,
+    "party": "Sumar"
+   },
+   {
+    "max": 17,
+    "mean": 8.1,
+    "median": 8,
+    "min": 0,
+    "p10": 5,
+    "p2_5": 2,
+    "p90": 12,
+    "p97_5": 14,
+    "party": "ERC"
+   },
+   {
+    "max": 16,
+    "mean": 6.7,
+    "median": 7,
+    "min": 0,
+    "p10": 2,
+    "p2_5": 0,
+    "p90": 11,
+    "p97_5": 13,
+    "party": "EH Bildu"
+   },
+   {
+    "max": 15,
+    "mean": 5.0,
+    "median": 5,
+    "min": 0,
+    "p10": 1,
+    "p2_5": 0,
+    "p90": 8,
+    "p97_5": 10,
+    "party": "Junts"
+   },
+   {
+    "max": 12,
+    "mean": 4.3,
+    "median": 4,
+    "min": 0,
+    "p10": 0,
+    "p2_5": 0,
+    "p90": 8,
+    "p97_5": 9,
+    "party": "PNV"
+   },
+   {
+    "max": 19,
+    "mean": 3.8,
+    "median": 3,
+    "min": 0,
+    "p10": 0,
+    "p2_5": 0,
+    "p90": 9,
+    "p97_5": 13,
+    "party": "Aliança.cat"
+   },
+   {
+    "max": 10,
+    "mean": 2.9,
+    "median": 2,
+    "min": 0,
+    "p10": 0,
+    "p2_5": 0,
+    "p90": 6,
+    "p97_5": 7,
+    "party": "BNG"
+   },
+   {
+    "max": 11,
+    "mean": 2.6,
+    "median": 2,
+    "min": 0,
+    "p10": 1,
+    "p2_5": 0,
+    "p90": 4,
+    "p97_5": 5,
+    "party": "Podemos"
+   },
+   {
+    "max": 17,
+    "mean": 1.9,
+    "median": 0,
+    "min": 0,
+    "p10": 0,
+    "p2_5": 0,
+    "p90": 6,
+    "p97_5": 9,
+    "party": "AA"
+   },
+   {
+    "max": 8,
+    "mean": 1.7,
+    "median": 1,
+    "min": 0,
+    "p10": 0,
+    "p2_5": 0,
+    "p90": 4,
+    "p97_5": 6,
+    "party": "CCa"
+   },
+   {
+    "max": 5,
+    "mean": 1.3,
+    "median": 1,
+    "min": 0,
+    "p10": 0,
+    "p2_5": 0,
+    "p90": 3,
+    "p97_5": 4,
+    "party": "UPN"
+   },
+   {
+    "max": 8,
+    "mean": 0.1,
+    "median": 0,
+    "min": 0,
+    "p10": 0,
+    "p2_5": 0,
+    "p90": 1,
+    "p97_5": 1,
+    "party": "SALF"
+   }
+  ],
+  "stress": {
+   "bloc": "derecha",
+   "mean": 195.5,
+   "members": [
+    "PP",
+    "Vox"
+   ],
+   "note": "Mismo modelo, con la media de encuestas desplazada por el error que tuvo el sector en esas elecciones, en contra de este bloque.",
+   "p_majority": 0.9865,
+   "scenarios": [
+    {
+     "election": "2019-04-28",
+     "label": "abril de 2019",
+     "margin_error": 5.25,
+     "mean": 185.2,
+     "p_majority": 0.8516
+    },
+    {
+     "election": "2023-07-23",
+     "label": "2023",
+     "margin_error": 4.02,
+     "mean": 187.7,
+     "p_majority": 0.9054
+    }
+   ]
+  },
+  "window_days": 30
+ },
+ "generated_at_utc": "2026-10-12T21:18:35+00:00",
+ "inputs": [
+  {
+   "commissioner": "Electomanía",
+   "fieldwork_end": "2026-09-18",
+   "pollster": "EM-Analytics",
+   "sample_size": 1399,
+   "type": "professional",
+   "values": {
+    "AA": 0.9,
+    "BNG": 0.9,
+    "CCa": 0.4,
+    "EH Bildu": 1.4,
+    "ERC": 1.9,
+    "Junts": 1.2,
+    "PNV": 1.1,
+    "PP": 32.1,
+    "PSOE": 25.6,
+    "Podemos": 3.3,
+    "SALF": 2.0,
+    "Sumar": 6.8,
+    "UPN": 0.2,
+    "Vox": 19.1
+   }
+  },
+  {
+   "commissioner": "Onda Cero",
+   "fieldwork_end": "2026-09-21",
+   "pollster": "Celeste-Tel",
+   "sample_size": 1100,
+   "type": "professional",
+   "values": {
+    "BNG": 0.8,
+    "CCa": 0.5,
+    "EH Bildu": 1.4,
+    "ERC": 2.0,
+    "Junts": 1.5,
+    "PNV": 1.1,
+    "PP": 33.9,
+    "PSOE": 25.4,
+    "Podemos": 3.3,
+    "SALF": 1.7,
+    "Sumar": 6.4,
+    "UPN": 0.2,
+    "Vox": 17.8
+   }
+  },
+  {
+   "commissioner": "Henneo",
+   "fieldwork_end": "2026-09-21",
+   "pollster": "DYM",
+   "sample_size": 1017,
+   "type": "professional",
+   "values": {
+    "PP": 34.7,
+    "PSOE": 26.3,
+    "Podemos": 3.7,
+    "SALF": 1.0,
+    "Sumar": 4.5,
+    "Vox": 17.3
+   }
+  },
+  {
+   "commissioner": "Electomanía",
+   "fieldwork_end": "2026-09-25",
+   "pollster": "EM-Analytics",
+   "sample_size": 1104,
+   "type": "professional",
+   "values": {
+    "AA": 0.9,
+    "BNG": 0.9,
+    "CCa": 0.4,
+    "EH Bildu": 1.4,
+    "ERC": 2.0,
+    "Junts": 1.2,
+    "PNV": 1.1,
+    "PP": 32.3,
+    "PSOE": 25.3,
+    "Podemos": 3.8,
+    "SALF": 2.0,
+    "Sumar": 6.5,
+    "UPN": 0.2,
+    "Vox": 18.8
+   }
+  },
+  {
+   "commissioner": "El Español",
+   "fieldwork_end": "2026-09-26",
+   "pollster": "SocioMétrica",
+   "sample_size": 1200,
+   "type": "professional",
+   "values": {
+    "AA": 1.0,
+    "BNG": 1.0,
+    "CCa": 0.6,
+    "EH Bildu": 1.4,
+    "ERC": 2.0,
+    "Junts": 1.2,
+    "PNV": 0.9,
+    "PP": 33.9,
+    "PSOE": 25.7,
+    "Podemos": 3.3,
+    "SALF": 2.0,
+    "Sumar": 5.7,
+    "UPN": 0.2,
+    "Vox": 18.0
+   }
+  },
+  {
+   "commissioner": "Prisa",
+   "fieldwork_end": "2026-09-28",
+   "pollster": "40dB",
+   "sample_size": 2000,
+   "type": "professional",
+   "values": {
+    "PP": 31.6,
+    "PSOE": 27.4,
+    "Podemos": 2.7,
+    "SALF": 2.0,
+    "Sumar": 5.6,
+    "Vox": 18.4
+   }
+  },
+  {
+   "commissioner": "elDiario.es",
+   "fieldwork_end": "2026-10-01",
+   "pollster": "Ateneo del Dato",
+   "sample_size": 1500,
+   "type": "professional",
+   "values": {
+    "PP": 33.2,
+    "PSOE": 27.5,
+    "Podemos": 3.3,
+    "Sumar": 7.0,
+    "Vox": 19.2
+   }
+  },
+  {
+   "commissioner": "El Mundo",
+   "fieldwork_end": "2026-10-01",
+   "pollster": "Sigma Dos",
+   "sample_size": 2116,
+   "type": "professional",
+   "values": {
+    "AA": 0.8,
+    "Aliança.cat": 1.0,
+    "BNG": 0.9,
+    "CCa": 0.5,
+    "EH Bildu": 1.3,
+    "ERC": 2.5,
+    "Junts": 1.1,
+    "PNV": 1.0,
+    "PP": 32.6,
+    "PSOE": 25.6,
+    "Podemos": 3.3,
+    "Sumar": 6.6,
+    "UPN": 0.2,
+    "Vox": 18.3
+   }
+  },
+  {
+   "commissioner": "Artículo14",
+   "fieldwork_end": "2026-10-01",
+   "pollster": "Winston",
+   "sample_size": 1201,
+   "type": "professional",
+   "values": {
+    "PP": 31.3,
+    "PSOE": 24.9,
+    "Podemos": 3.9,
+    "Sumar": 6.8,
+    "Vox": 19.1
+   }
+  },
+  {
+   "commissioner": "Okdiario",
+   "fieldwork_end": "2026-10-02",
+   "pollster": "Data10",
+   "sample_size": 1000,
+   "type": "professional",
+   "values": {
+    "AA": 0.5,
+    "BNG": 1.0,
+    "CCa": 0.3,
+    "EH Bildu": 1.4,
+    "ERC": 1.9,
+    "Junts": 1.5,
+    "PNV": 0.8,
+    "PP": 34.0,
+    "PSOE": 26.1,
+    "Podemos": 4.3,
+    "SALF": 1.4,
+    "Sumar": 5.2,
+    "UPN": 0.2,
+    "Vox": 18.6
+   }
+  },
+  {
+   "commissioner": "Electomanía",
+   "fieldwork_end": "2026-10-03",
+   "pollster": "EM-Analytics",
+   "sample_size": 8171,
+   "type": "professional",
+   "values": {
+    "AA": 1.1,
+    "BNG": 1.0,
+    "CCa": 0.3,
+    "EH Bildu": 1.4,
+    "ERC": 2.0,
+    "Junts": 1.1,
+    "PNV": 1.1,
+    "PP": 31.3,
+    "PSOE": 26.9,
+    "Podemos": 3.4,
+    "SALF": 1.7,
+    "Sumar": 6.3,
+    "UPN": 0.2,
+    "Vox": 19.4
+   }
+  },
+  {
+   "commissioner": "El Español",
+   "fieldwork_end": "2026-10-03",
+   "pollster": "SocioMétrica",
+   "sample_size": 1000,
+   "type": "professional",
+   "values": {
+    "BNG": 0.9,
+    "CCa": 0.6,
+    "EH Bildu": 1.3,
+    "ERC": 2.2,
+    "Junts": 1.2,
+    "PNV": 1.0,
+    "PP": 33.4,
+    "PSOE": 26.5,
+    "Podemos": 3.1,
+    "SALF": 2.2,
+    "Sumar": 5.3,
+    "UPN": 0.2,
+    "Vox": 18.1
+   }
+  },
+  {
+   "commissioner": null,
+   "fieldwork_end": "2026-10-05",
+   "pollster": "PSOE",
+   "sample_size": 7000,
+   "type": "party_internal",
+   "values": {}
+  },
+  {
+   "commissioner": "PP",
+   "fieldwork_end": "2026-10-05",
+   "pollster": "SocioMétrica",
+   "sample_size": null,
+   "type": "professional",
+   "values": {}
+  },
+  {
+   "commissioner": "La Razón",
+   "fieldwork_end": "2026-10-06",
+   "pollster": "NC Report",
+   "sample_size": 1000,
+   "type": "professional",
+   "values": {
+    "BNG": 0.7,
+    "CCa": 0.4,
+    "EH Bildu": 1.4,
+    "ERC": 1.8,
+    "Junts": 2.9,
+    "PNV": 0.9,
+    "PP": 34.1,
+    "PSOE": 25.0,
+    "Podemos": 3.9,
+    "Sumar": 5.3,
+    "UPN": 0.2,
+    "Vox": 18.2
+   }
+  },
+  {
+   "commissioner": "Henneo",
+   "fieldwork_end": "2026-10-07",
+   "pollster": "DYM",
+   "sample_size": 1011,
+   "type": "professional",
+   "values": {
+    "PP": 34.0,
+    "PSOE": 28.2,
+    "Podemos": 3.6,
+    "SALF": 0.5,
+    "Sumar": 3.6,
+    "Vox": 18.2
+   }
+  },
+  {
+   "commissioner": "El Confidencial",
+   "fieldwork_end": "2026-10-07",
+   "pollster": "IMOP",
+   "sample_size": 900,
+   "type": "professional",
+   "values": {
+    "AA": 1.0,
+    "BNG": 1.1,
+    "CCa": 0.6,
+    "EH Bildu": 1.3,
+    "ERC": 2.2,
+    "Junts": 1.1,
+    "PNV": 0.9,
+    "PP": 30.4,
+    "PSOE": 26.5,
+    "Podemos": 2.3,
+    "SALF": 1.9,
+    "Sumar": 7.6,
+    "UPN": 0.2,
+    "Vox": 19.0
+   }
+  },
+  {
+   "commissioner": "Prisa",
+   "fieldwork_end": "2026-10-08",
+   "pollster": "40dB",
+   "sample_size": 800,
+   "type": "professional",
+   "values": {
+    "PP": 31.9,
+    "PSOE": 28.1,
+    "Podemos": 2.3,
+    "SALF": 1.8,
+    "Sumar": 5.3,
+    "Vox": 18.9
+   }
+  },
+  {
+   "commissioner": "Vocento",
+   "fieldwork_end": "2026-10-08",
+   "pollster": "GAD3",
+   "sample_size": 1077,
+   "type": "professional",
+   "values": {
+    "AA": 1.0,
+    "BNG": 0.9,
+    "CCa": 0.4,
+    "EH Bildu": 1.5,
+    "ERC": 2.6,
+    "Junts": 1.5,
+    "PNV": 1.0,
+    "PP": 31.4,
+    "PSOE": 26.4,
+    "Podemos": 2.3,
+    "SALF": 1.8,
+    "Sumar": 7.4,
+    "UPN": 0.1,
+    "Vox": 18.2
+   }
+  },
+  {
+   "commissioner": "Prensa Ibérica",
+   "fieldwork_end": "2026-10-08",
+   "pollster": "GESOP",
+   "sample_size": 1000,
+   "type": "professional",
+   "values": {
+    "ERC": 2.5,
+    "Junts": 1.9,
+    "PP": 28.7,
+    "PSOE": 26.1,
+    "Podemos": 2.6,
+    "SALF": 2.0,
+    "Sumar": 8.0,
+    "Vox": 18.9
+   }
+  },
+  {
+   "commissioner": "Vozpópuli",
+   "fieldwork_end": "2026-10-08",
+   "pollster": "Hamalgama Métrica",
+   "sample_size": 1000,
+   "type": "professional",
+   "values": {
+    "BNG": 0.8,
+    "CCa": 0.5,
+    "EH Bildu": 1.3,
+    "ERC": 1.9,
+    "Junts": 1.7,
+    "PNV": 0.9,
+    "PP": 33.4,
+    "PSOE": 25.3,
+    "Podemos": 3.3,
+    "SALF": 1.8,
+    "Sumar": 5.4,
+    "UPN": 0.2,
+    "Vox": 19.6
+   }
+  },
+  {
+   "commissioner": "laSexta",
+   "fieldwork_end": "2026-10-08",
+   "pollster": "InvyMark",
+   "sample_size": null,
+   "type": "professional",
+   "values": {
+    "EH Bildu": 1.5,
+    "ERC": 1.9,
+    "Junts": 1.2,
+    "PNV": 1.1,
+    "PP": 32.8,
+    "PSOE": 28.0,
+    "Podemos": 3.2,
+    "SALF": 1.8,
+    "Sumar": 6.3,
+    "Vox": 18.8
+   }
+  },
+  {
+   "commissioner": "El Mundo",
+   "fieldwork_end": "2026-10-08",
+   "pollster": "Sigma Dos",
+   "sample_size": 2017,
+   "type": "professional",
+   "values": {
+    "AA": 0.8,
+    "BNG": 0.9,
+    "CCa": 0.5,
+    "EH Bildu": 1.1,
+    "ERC": 2.6,
+    "Junts": 1.2,
+    "PNV": 0.9,
+    "PP": 31.9,
+    "PSOE": 25.3,
+    "Podemos": 3.1,
+    "Sumar": 7.6,
+    "UPN": 0.2,
+    "Vox": 19.1
+   }
+  },
+  {
+   "commissioner": "Electomanía",
+   "fieldwork_end": "2026-10-09",
+   "pollster": "EM-Analytics",
+   "sample_size": 4125,
+   "type": "professional",
+   "values": {
+    "AA": 1.1,
+    "BNG": 1.0,
+    "CCa": 0.3,
+    "EH Bildu": 1.4,
+    "ERC": 2.0,
+    "Junts": 1.1,
+    "PNV": 1.1,
+    "PP": 31.5,
+    "PSOE": 26.9,
+    "Podemos": 3.4,
+    "SALF": 1.7,
+    "Sumar": 6.0,
+    "UPN": 0.2,
+    "Vox": 19.1
+   }
+  },
+  {
+   "commissioner": "El Debate",
+   "fieldwork_end": "2026-10-09",
+   "pollster": "Target Point",
+   "sample_size": 1002,
+   "type": "professional",
+   "values": {
+    "PP": 32.0,
+    "PSOE": 25.9,
+    "Podemos": 3.4,
+    "SALF": 1.3,
+    "Sumar": 6.9,
+    "Vox": 18.7
+   }
+  },
+  {
+   "commissioner": "El Español",
+   "fieldwork_end": "2026-10-11",
+   "pollster": "SocioMétrica",
+   "sample_size": 1000,
+   "type": "professional",
+   "values": {
+    "AA": 0.9,
+    "BNG": 0.9,
+    "CCa": 0.5,
+    "EH Bildu": 1.3,
+    "ERC": 2.0,
+    "Junts": 1.5,
+    "PNV": 0.8,
+    "PP": 32.6,
+    "PSOE": 26.2,
+    "Podemos": 2.8,
+    "SALF": 2.1,
+    "Sumar": 5.8,
+    "UPN": 0.2,
+    "Vox": 18.8
+   }
+  }
+ ],
+ "inputs_sha256": "ed7476b501adc074e061a16159faaa14ffcaaa3e34c457a2480c518b4942c6c4",
+ "model_fingerprint": "c22deb235019418b",
+ "model_version": "2026.10.4",
+ "schema": 1,
+ "source": {
+  "license": "Datos de encuestas: Wikipedia (EN), CC BY-SA 4.0",
+  "page": "Opinion polling for the 2026 Spanish general election",
+  "revid": 1379921971
+ }
+}
