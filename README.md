@@ -63,8 +63,18 @@ y comprobar que sale el mismo hash. Si alguien cambiara el código después
 publicar el código: publicar el código prueba lo que hay hoy; el compromiso
 prueba lo que había el día de cada predicción.
 
+## El primer registro (12 de octubre) es más débil, y se queda así
+
+El registro del 12-oct-2026 se escribió antes de que el formato incluyera el
+hash completo: lleva sólo `model_fingerprint` (16 caracteres hexadecimales,
+64 bits) y el `code_commit` del repositorio de código. Compromete menos que
+los siguientes. **No se ha reemitido ni se reemitirá**: un registro que se
+corrige cuando conviene no prueba nada.
+
 ## Lo que NO hay aquí, a propósito
 
+- **Nada anterior al 12 de octubre de 2026.** El registro no se rellena
+  hacia atrás, ni siquiera con días reconstruidos y etiquetados como tales.
 - **Del 24 al 29 de noviembre no hay fotos.** El artículo 69.7 de la LOREG
   prohíbe publicar sondeos los cinco días anteriores a la votación, y un
   derivado de encuestas es un sondeo. El hueco es la ley, no un fallo.
