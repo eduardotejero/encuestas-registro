@@ -17,6 +17,13 @@ registro/AAAA/AAAA-MM-DD.json.ots   su sello de tiempo OpenTimestamps
   distribución de escaños (media de las simulaciones y reparto del voto
   central), probabilidad de cada bloque de llegar a 176, prueba de estrés,
   avisos y supuestos.
+- `forecast.provinces` (desde el esquema 2, 13-oct-2026): por provincia y
+  partido, la probabilidad de sacar al menos un escaño y los escaños
+  esperados, de la misma simulación. Es lo que permite puntuar el 30-N
+  provincia a provincia. Las fotos de esquema 1 no lo tienen y **no se
+  reemiten**: esas fotos sólo se puntúan a escala nacional.
+- `forecast.baselines.naive`: la línea base tonta del mismo día (media
+  simple + swing uniforme), para compararla el 30-N sin recalcular nada.
 - `inputs`: **todas** las encuestas que entraron en la estimación (casa,
   fechas, muestra, cifras) y su hash (`inputs_sha256`).
 - `source`: la revisión exacta de Wikipedia de la que se leyeron.
