@@ -9,6 +9,7 @@ de datos.
 ```
 registro/AAAA/AAAA-MM-DD.json       la foto del día
 registro/AAAA/AAAA-MM-DD.json.ots   su sello de tiempo OpenTimestamps
+registro/AAAA/AAAA-MM-DD.hueco.json un día sin foto, declarado con su motivo
 ```
 
 ## Qué hay en cada foto
@@ -29,6 +30,33 @@ registro/AAAA/AAAA-MM-DD.json.ots   su sello de tiempo OpenTimestamps
 - `source`: la revisión exacta de Wikipedia de la que se leyeron.
 - `model_version`, `model_fingerprint_sha256`, `code_commit`: con qué
   código se calculó (ver más abajo).
+
+## Calendario operativo: cómo leer un día sin foto
+
+- **Una foto al día**, a las **07:00 hora peninsular** (Europe/Madrid, con
+  el cambio de hora incluido), del **12 de octubre al 23 de noviembre de
+  2026**. Nada antes del 12 de octubre, nunca.
+- **Del 24 al 29 de noviembre no hay fotos**: el artículo 69.7 de la LOREG
+  prohíbe publicar sondeos los cinco días anteriores a la votación. Esos días
+  no son huecos.
+- **Cada foto se empuja a GitHub en cuanto se escribe** (en minutos). La
+  hora del commit en GitHub es el sello de un tercero; el sello
+  OpenTimestamps llega horas después, cuando el bloque de Bitcoin lo
+  confirma. Si no hay red, el publicador reintenta cada 10 minutos sin
+  perder el fichero.
+- **Si la máquina estaba apagada o dormida a las 07:00**, la foto sale
+  cuando vuelve, ese mismo día (su campo `generated_at_utc` y el commit lo
+  dicen), y nunca con fecha de otro día.
+- **Si un día termina sin foto, el publicador lo declara**: escribe
+  `registro/AAAA/AAAA-MM-DD.hueco.json` con el motivo (por ejemplo, «host no
+  disponible: ningún latido registrado») y lo comete aparte, con su propio
+  sello. El motivo sale de los latidos del propio publicador: es lo que dice
+  la máquina, no una prueba independiente.
+- **Un hueco no se rellena nunca.** No se publica una foto reconstruida a
+  posteriori para un día pasado; el código se niega a hacerlo. Un hueco
+  declarado se lee como hueco, no como selección: el día que el número
+  hubiera sido incómodo no puede desaparecer en silencio, porque o hay foto
+  o hay marcador con fecha propia.
 
 ## Tres pruebas de fecha, independientes
 
