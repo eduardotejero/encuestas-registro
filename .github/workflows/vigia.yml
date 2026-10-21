@@ -1,13 +1,14 @@
 # Vigía del registro: comprueba desde FUERA del host que cada día tiene su
-# foto o su hueco declarado. Ver .github/vigia.py.
+# foto. Ver .github/vigia.py (y sus pruebas, .github/test_vigia.py).
+#
+# No se contenta con "foto o hueco": un hueco por avería avisa el primer
+# día, y más de dos huecos seguidos avisan aunque sean operativos. Si no,
+# una ingesta que reventase cada día dejaría un hueco cada día y el vigía
+# callaría: el mismo fallo que debe detectar lo satisfaría.
 #
 # El cron de GitHub va en UTC y no sigue el cambio de hora: corre a las
 # 07:15 y 08:15 UTC y es el script el que decide en hora peninsular
 # (exige el día de hoy desde las 09:00 Europe/Madrid).
-#
-# Si falta algo: abre (o comenta) un único issue con la etiqueta «vigía» y
-# el job FALLA, para que GitHub avise por correo. Cuando no falta nada,
-# cierra el issue.
 name: vigía del registro
 
 on:
@@ -27,6 +28,8 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+      - name: Probar el propio vigía
+        run: python .github/test_vigia.py
       - name: Comprobar fotos y huecos
         id: check
         continue-on-error: true
@@ -34,27 +37,31 @@ jobs:
       - name: Abrir, comentar o cerrar el issue
         env:
           GH_TOKEN: ${{ github.token }}
+          SUMMARY: ${{ steps.check.outputs.summary }}
           MISSING: ${{ steps.check.outputs.missing }}
+          BROKEN: ${{ steps.check.outputs.broken }}
+          STREAK: ${{ steps.check.outputs.streak }}
         run: |
           gh label create "vigía" --color B60205 \
-            --description "Días del registro sin foto ni hueco declarado" 2>/dev/null || true
+            --description "El registro no está saliendo" 2>/dev/null || true
           open=$(gh issue list --label "vigía" --state open --json number --jq '.[0].number')
-          if [ -n "$MISSING" ]; then
-            body="Faltan en GitHub la foto y el hueco declarado de: $MISSING
+          if [ "${{ steps.check.outcome }}" = "failure" ]; then
+            body="$SUMMARY
 
-          El publicador no ha empujado nada para esos días. O el host está caído,
-          o la publicación está parada a propósito sin declarar el hueco.
           Ejecución: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
             if [ -n "$open" ]; then
               gh issue comment "$open" --body "$body"
             else
-              gh issue create --label "vigía" --title "Registro: faltan fotos ($MISSING)" --body "$body"
+              titulo="Registro: no está saliendo"
+              [ -n "$MISSING" ] && titulo="Registro: faltan fotos ($MISSING)"
+              [ -n "$BROKEN" ] && titulo="Registro: avería el $BROKEN"
+              gh issue create --label "vigía" --title "$titulo" --body "$body"
             fi
           elif [ -n "$open" ]; then
-            gh issue close "$open" --comment "Todo en orden: cada día exigible tiene foto o hueco declarado."
+            gh issue close "$open" --comment "Todo en orden: cada día exigible tiene foto, o un hueco operativo declarado y ninguna racha larga."
           fi
-      - name: Fallar si falta algo
+      - name: Fallar si el registro no está saliendo
         if: steps.check.outcome == 'failure'
         run: |
-          echo "::error::Faltan fotos del registro: ${{ steps.check.outputs.missing }}"
+          echo "::error::${{ steps.check.outputs.summary }}"
           exit 1
