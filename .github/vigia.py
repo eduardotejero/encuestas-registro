@@ -14,6 +14,11 @@ que hay tres reglas, no una:
      y falló). Avisa desde el PRIMER día.
   3. RACHA: más de MAX_RACHA huecos consecutivos, sean de la clase que sean.
      Un host que no vuelve en tres días no es un incidente operativo.
+  4. WEB: la web pública no responde 200. El vigía miraba el registro y no la
+     web, y ése es justo el hueco que costó seis días: algo que se cae y nadie
+     se entera. Importa especialmente porque el proxy del VPS apunta a la IP
+     de la pasarela de una red de Docker ajena: si alguien recrea esa red, la
+     IP cambia y la web da 502 EN SILENCIO (ver deploy/PLAN-VPS.md).
 
 Calendario: del 12-oct al 23-nov de 2026 (el apagón del art. 69.7 LOREG no
 es hueco). El día de hoy sólo se exige a partir de las 09:00 Europe/Madrid
@@ -38,6 +43,21 @@ DUE_HOUR = 9
 #: días seguidos sin foto son una máquina que no vuelve.
 MAX_RACHA = 2
 GAP_AVERIA = "averia"
+#: Web pública. Se comprueba siempre que el nombre resuelva; mientras no
+#: exista, no se avisa (no hay nada que vigilar todavía).
+WEB_TIMEOUT = 20
+#: Fichero versionado que dice si se vigila la web (ver .github/vigia-web.json).
+WEB_CONF = Path(__file__).parent / "vigia-web.json"
+
+
+def web_conf() -> dict:
+    try:
+        d = json.loads(WEB_CONF.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return {"vigilar": False, "url": "", "motivo": "sin vigia-web.json"}
+    if os.environ.get("VIGIA_WEB"):
+        d = {**d, "url": os.environ["VIGIA_WEB"], "vigilar": True}
+    return d
 
 
 def expected(now: datetime) -> list[date]:
@@ -93,7 +113,39 @@ def summarize(a: dict) -> tuple[bool, str]:
         lineas.append(f"{a['streak']} días seguidos sin foto hasta el "
                       f"{a['streak_end']}: más de {MAX_RACHA} es una avería, "
                       "aunque cada día se haya declarado como operativo.")
+    web = a.get("web")
+    if web and web.get("vigilar") and web["estado"] not in (None, 200):
+        lineas.append(
+            f"La web pública NO responde 200: {web['url']} -> "
+            f"{web.get('detalle') or web['estado']}. El pronóstico puede "
+            "estar saliendo y la web caída: son dos fallos distintos.")
     return bool(lineas), "\n".join(lineas)
+
+
+def comprobar_web(url: str) -> dict:
+    """¿Responde la web pública? `estado: None` si el nombre aún no resuelve:
+    eso no es una avería, es que todavía no existe."""
+    import socket
+    import urllib.error
+    import urllib.request
+    from urllib.parse import urlparse
+    host = urlparse(url).hostname
+    try:
+        socket.getaddrinfo(host, 443)
+    except OSError:
+        return {"url": url, "estado": None,
+                "detalle": f"{host} todavía no resuelve"}
+    try:
+        req = urllib.request.Request(
+            url, method="GET", headers={"User-Agent": "vigia-registro"})
+        with urllib.request.urlopen(req, timeout=WEB_TIMEOUT) as r:
+            return {"url": url, "estado": r.status,
+                    "bytes": len(r.read(2048))}
+    except urllib.error.HTTPError as e:
+        return {"url": url, "estado": e.code, "detalle": f"HTTP {e.code}"}
+    except Exception as e:  # noqa: BLE001
+        return {"url": url, "estado": 0,
+                "detalle": f"{type(e).__name__}: {e}"}
 
 
 def main() -> int:
@@ -101,9 +153,18 @@ def main() -> int:
            if os.environ.get("VIGIA_NOW") else datetime.now(MADRID))
     root = Path(sys.argv[1] if len(sys.argv) > 1 else ".")
     a = audit(root, now)
+    conf = web_conf()
+    medida = (comprobar_web(conf["url"]) if conf.get("url")
+              else {"url": "", "estado": None, "detalle": "sin url"})
+    a["web"] = {**medida, "vigilar": bool(conf.get("vigilar")),
+                "motivo": conf.get("motivo", "")}
     mal, texto = summarize(a)
+    web = a["web"]
     print(f"ahora {now.isoformat(timespec='minutes')} (Europe/Madrid); "
-          f"{a['dias']} días exigibles; racha máxima sin foto {a['streak']}")
+          f"{a['dias']} días exigibles; racha máxima sin foto {a['streak']}; "
+          f"web {web.get('detalle') or web['estado']}"
+          + ("" if web.get("vigilar") else
+             f" (NO vigilada: {web.get('motivo')})"))
     print(texto or "todo en orden: cada día exigible tiene foto, o un hueco "
                    "operativo declarado y ninguna racha larga.")
     if os.environ.get("GITHUB_OUTPUT"):
@@ -111,6 +172,7 @@ def main() -> int:
             f.write(f"missing={' '.join(d.isoformat() for d in a['missing'])}\n")
             f.write(f"broken={' '.join(d.isoformat() for d, _ in a['broken'])}\n")
             f.write(f"streak={a['streak']}\n")
+            f.write(f"web={a['web']['estado']}\n")
             f.write("summary<<FIN\n" + (texto or "ok") + "\nFIN\n")
     return 1 if mal else 0
 

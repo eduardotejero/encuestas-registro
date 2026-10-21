@@ -1,0 +1,16 @@
+{
+ "_comment": [
+  "¿Vigila el vigía la web pública? Fichero aparte y versionado a propósito:",
+  "activarla es un COMMIT, no una variable que alguien recuerde poner.",
+  "",
+  "Mientras `vigilar` sea false, el vigía mide la web y la imprime en el log,",
+  "pero no avisa: antes de desplegar, que no responda es lo normal.",
+  "",
+  "Se pone a true en el paso 6 del despliegue (deploy/PLAN-VPS.md), junto con",
+  "el vhost. Hace falta porque el proxy apunta a la IP de la pasarela de una",
+  "red de Docker ajena: si alguien recrea esa red, la web da 502 EN SILENCIO."
+ ],
+ "vigilar": false,
+ "url": "https://encuestas.nmtechconsulting.com/",
+ "motivo": "Todavía no se ha desplegado nada en el VPS (21-oct-2026)."
+}

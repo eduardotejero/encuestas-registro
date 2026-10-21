@@ -130,5 +130,33 @@ root = montar(dias_hasta("2026-10-22", "foto"))
 mal, texto = vigia.summarize(vigia.audit(root, ahora("2026-10-22T09:15+02:00")))
 check("un marcador ilegible avisa", mal and "AVERÍA" in texto)
 
+# --- la web pública -------------------------------------------------------
+# El 21-oct: el vigía miraba el registro y no la web. Importa porque el proxy
+# del VPS apunta a la IP de la pasarela de una red de Docker ajena: si alguien
+# la recrea, la web da 502 en silencio.
+root = montar(dias_hasta("2026-10-22", "foto"))
+
+
+def con_web(estado, vigilar=True):
+    a = vigia.audit(root, ahora("2026-10-22T09:15+02:00"))
+    a["web"] = {"url": "https://x/", "estado": estado, "vigilar": vigilar,
+                "detalle": None if estado == 200 else f"HTTP {estado}"}
+    return vigia.summarize(a)
+
+
+check("web 200 no avisa", not con_web(200)[0])
+mal, texto = con_web(502)
+check("web 502 avisa", mal and "NO responde 200" in texto)
+check("web inalcanzable avisa", con_web(0)[0])
+check("web caída pero NO vigilada no avisa", not con_web(502, vigilar=False)[0])
+check("un nombre que aún no resuelve no avisa", not con_web(None)[0])
+check("registro y web son avisos distintos",
+      "dos fallos distintos" in con_web(502)[1])
+
+conf = json.loads((Path(__file__).parent / "vigia-web.json")
+                  .read_text(encoding="utf-8"))
+check("vigia-web.json declara url, vigilar y motivo",
+      bool(conf.get("url")) and "vigilar" in conf and bool(conf.get("motivo")))
+
 print(f"\n{check.fallos} fallos")
 sys.exit(1 if check.fallos else 0)
