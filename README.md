@@ -105,6 +105,33 @@ y comprobar que sale el mismo hash. Si alguien cambiara el código después
 publicar el código: publicar el código prueba lo que hay hoy; el compromiso
 prueba lo que había el día de cada predicción.
 
+### El compromiso exige que el código sea reproducible, y hasta el 21 de octubre no lo era
+
+Un compromiso con el código sólo sirve si ese código, con las mismas entradas,
+da las mismas cifras. Si no, nadie puede comprobar nada: volvería a ejecutarlo
+y le saldrían otros números, sin saber si es por el modelo o por el azar.
+
+**Las fotos del 12 al 15 de octubre de 2026 se calcularon con un modelo que no
+era reproducible.** La simulación sorteaba un valor por bloque político
+recorriendo un conjunto, y el orden en que Python recorre un conjunto de
+cadenas cambia de una ejecución a otra: cada ejecución repartía los números
+aleatorios de otra forma. El efecto medido sobre el error histórico del
+modelo era de unas dos décimas de escaño.
+
+Qué significa para esas cuatro fotos, dicho sin adornos:
+
+- **el compromiso con el código sigue en pie**: la huella identifica el código
+  exacto, y ese código es el que se ejecutó;
+- **pero volver a ejecutarlo no reproduce la foto cifra a cifra**. Reproduce
+  una foto del mismo modelo, con otro sorteo.
+
+Se corrigió el 21 de octubre de 2026, en origen (orden fijo, no una semilla
+que lo tapara), y ahora un test lo exige ejecutando el modelo en procesos
+distintos y comparando. **Las cuatro fotos afectadas no se reemiten**, por la
+misma razón que el registro del 12-oct: un registro que se corrige cuando
+conviene no prueba nada. Queda escrito aquí, que es lo único honesto que se
+puede hacer con ellas.
+
 ## El primer registro (12 de octubre) es más débil, y se queda así
 
 El registro del 12-oct-2026 se escribió antes de que el formato incluyera el
