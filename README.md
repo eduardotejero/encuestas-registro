@@ -52,6 +52,13 @@ registro/AAAA/AAAA-MM-DD.hueco.json un día sin foto, declarado con su motivo
   disponible: ningún latido registrado») y lo comete aparte, con su propio
   sello. El motivo sale de los latidos del propio publicador: es lo que dice
   la máquina, no una prueba independiente.
+- **Un vigía independiente del publicador** (`.github/workflows/vigia.yml`)
+  comprueba cada mañana, desde GitHub y no desde la máquina que publica,
+  que cada día exigible tenga foto o hueco declarado (el de hoy, a partir
+  de las 09:00 hora peninsular). Si falta alguno, abre un issue con la
+  etiqueta «vigía». Existe porque el 15-oct-2026 el publicador cayó y la
+  caída no se detectó hasta el 21: la vigilancia vivía dentro del proceso
+  caído. Los huecos del 16 al 21 de octubre se declararon ese día.
 - **Un hueco no se rellena nunca.** No se publica una foto reconstruida a
   posteriori para un día pasado; el código se niega a hacerlo. Un hueco
   declarado se lee como hueco, no como selección: el día que el número
