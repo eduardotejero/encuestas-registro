@@ -143,10 +143,14 @@ function pintar(ix) {
 
   if (ix.apagon.activo) {
     partes.push(`<div class="grave"><strong>Apagón electoral.</strong>
-      Desde el ${esc(ix.apagon.desde.slice(0, 10))} y hasta el cierre de los
-      colegios no se publica ninguna estimación: ${esc(ix.apagon.base_legal)}
-      Esta página se ha construido <em>sin</em> los datos de estimación, no
-      sólo ocultándolos. Vuelve el 29 de noviembre a las 20:00.</div>`);
+      ${esc(ix.apagon.base_legal)} Esta página se ha construido <em>sin</em>
+      los datos de estimación, no sólo ocultándolos: durante el apagón no hay
+      ninguna cifra en este sitio, ni a la vista ni descargable.
+      Vuelve el 29 de noviembre a las 20:00, al cerrar los colegios.
+      <br><span class="nota">El apagón legal empieza el
+      ${esc(ix.apagon.desde_legal.slice(0, 10))} a las 00:00; este sitio se
+      apaga dos horas antes, a las 22:00 del día anterior.
+      ${esc(ix.apagon.margen || "")}</span></div>`);
     partes.push(indiceRegistro(ix));
     document.getElementById("cuerpo").innerHTML = partes.join("");
     return;

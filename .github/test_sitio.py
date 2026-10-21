@@ -106,9 +106,20 @@ check("antes del apagón las cifras son descargables",
       all(h in ficheros(destino) for h in CIFRAS))
 check("la portada es la foto más reciente", ix["portada"]["date"] == "2026-11-23")
 
+# --- El margen de dos horas sobre el apagón legal -------------------------
+check("el sitio se apaga antes que la ley",
+      cs.BLACKOUT_START < cs.LEGAL_BLACKOUT_START)
+check("el margen es de dos horas",
+      cs.LEGAL_BLACKOUT_START - cs.BLACKOUT_START == timedelta(hours=2))
+ix, _ = construir(root, "2026-11-23T21:59:00+01:00")
+check("a las 21:59 del 23 el sitio sigue abierto",
+      ix["apagon"]["activo"] is False and ix["portada"] is not None)
+
 # --- EL APAGÓN: ni un número de estimación en ningún fichero --------------
 for cuando, etiqueta in (
-    ("2026-11-24T00:00:00+01:00", "en el primer instante del apagón"),
+    ("2026-11-23T22:00:00+01:00", "a las 22:00 del 23 (dos horas antes de la ley)"),
+    ("2026-11-23T23:30:00+01:00", "la noche del 23, antes de la medianoche legal"),
+    ("2026-11-24T00:00:00+01:00", "en el primer instante del apagón legal"),
     ("2026-11-24T00:01:00+01:00", "un minuto después"),
     ("2026-11-26T12:00:00+01:00", "en mitad del apagón"),
     ("2026-11-29T19:59:00+01:00", "un minuto antes de cerrar los colegios"),

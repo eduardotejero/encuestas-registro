@@ -26,9 +26,20 @@ from zoneinfo import ZoneInfo
 MADRID = ZoneInfo("Europe/Madrid")
 START = date(2026, 10, 12)
 LAST = date(2026, 11, 23)
-#: Las mismas fechas que el backend (`ENCUESTAS_BLACKOUT_*`): art. 69.7 LOREG,
-#: cinco días antes de la votación, y reapertura al cierre de los colegios.
-BLACKOUT_START = datetime(2026, 11, 24, 0, 0, tzinfo=MADRID)
+#: Apagón del sitio. El legal (art. 69.7 LOREG, y el del backend en
+#: `ENCUESTAS_BLACKOUT_START`) empieza el 24-nov a las 00:00; el del sitio
+#: empieza DOS HORAS ANTES, a las 22:00 del 23.
+#:
+#: Por qué: un sitio estático sólo cambia cuando lo reconstruye el cron, y el
+#: cron de GitHub puede llegar tarde pero nunca temprano. Con el límite en la
+#: medianoche legal habría una ventana de hasta una hora sirviendo
+#: estimaciones ya prohibidas. Adelantarlo dos horas da exposición cero sin
+#: depender de la puntualidad de nadie, y cuesta dos horas de madrugada.
+#:
+#: La reapertura sí es la legal (cierre de los colegios): llegar tarde a
+#: reabrir no tiene coste, y el cron sólo puede retrasarla.
+BLACKOUT_START = datetime(2026, 11, 23, 22, 0, tzinfo=MADRID)
+LEGAL_BLACKOUT_START = datetime(2026, 11, 24, 0, 0, tzinfo=MADRID)
 BLACKOUT_END = datetime(2026, 11, 29, 20, 0, tzinfo=MADRID)
 
 #: Lo que la página necesita de cada foto. Se copia tal cual; no se calcula.
@@ -144,7 +155,12 @@ def construir(registro: Path, destino: Path, now: datetime) -> dict:
         "apagon": {
             "activo": cerrado,
             "desde": BLACKOUT_START.isoformat(),
+            "desde_legal": LEGAL_BLACKOUT_START.isoformat(),
             "hasta": BLACKOUT_END.isoformat(),
+            "margen": "El sitio se apaga dos horas antes del apagón legal: "
+                      "una página estática sólo cambia cuando la reconstruye "
+                      "el cron, y el cron puede llegar tarde pero no "
+                      "temprano.",
             "base_legal": "artículo 69.7 de la LOREG: no se publican sondeos "
                           "en los cinco días anteriores a la votación.",
         },
