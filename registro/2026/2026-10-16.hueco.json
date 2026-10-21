@@ -1,0 +1,12 @@
+{
+ "date": "2026-10-16",
+ "detected_at_utc": "2026-10-21T13:36:38+00:00",
+ "evidence": {
+  "heartbeats_utc": null
+ },
+ "host": "Edu",
+ "reason": "host no disponible: el proceso de EDU (servidor y bucle que lo relanza) cayó el 15-oct-2026 hacia las 16:00 CEST por un cierre externo (código 0xC000013A, causa no identificada en los eventos de Windows), y la tarea programada sólo se relanzaba al iniciar sesión, cosa que no ocurrió. Nadie se enteró: la vigilancia vivía dentro del proceso caído. Detectado el 21-oct-2026",
+ "rule": "Este día no tiene foto y no la tendrá: el registro no se rellena nunca con una foto reconstruida a posteriori. Los latidos son del propio publicador.",
+ "schema": 1,
+ "type": "hueco"
+}
