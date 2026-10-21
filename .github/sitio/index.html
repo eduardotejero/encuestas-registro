@@ -1,0 +1,379 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Registro de pronósticos · generales del 29-N</title>
+<meta name="description" content="Pronóstico de escaños publicado cada día con fecha verificable, a partir del registro público firmado y sellado.">
+<style>
+  :root {
+    color-scheme: light;
+    --surface-0: #f6f6f4;
+    --surface-1: #fcfcfb;
+    --border:    #dedcd5;
+    --ink:       #0b0b0b;
+    --ink-2:     #52514e;
+    --ink-3:     #78776f;
+    --aviso:     #8a4b00;
+    --aviso-bg:  #fdf3e3;
+    --grave:     #a11a1a;
+    --grave-bg:  #fbeceb;
+    /* Colores de partido: la identidad es del partido, no del puesto en la
+       tabla. Orden declarado para que rojo y verde no queden adyacentes
+       (separación bajo deuteranopia). Cada serie va además rotulada. */
+    --c-PP: #1D84CE; --c-PSOE: #EF1C27; --c-Podemos: #9269F5;
+    --c-Vox: #63BE21; --c-FA: #EF4B91; --c-Sumar: #EF4B91;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --surface-0: #121211; --surface-1: #1a1a19; --border: #35352f;
+      --ink: #f0efec; --ink-2: #c3c2b7; --ink-3: #94938a;
+      --aviso: #f0b45c; --aviso-bg: #2b2112;
+      --grave: #f08a82; --grave-bg: #2d1513;
+      /* Vox re-escalonado para la banda de luminosidad del fondo oscuro. */
+      --c-Vox: #53AD00;
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --surface-0: #121211; --surface-1: #1a1a19; --border: #35352f;
+    --ink: #f0efec; --ink-2: #c3c2b7; --ink-3: #94938a;
+    --aviso: #f0b45c; --aviso-bg: #2b2112;
+    --grave: #f08a82; --grave-bg: #2d1513;
+    --c-Vox: #53AD00;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--surface-0); color: var(--ink);
+    font: 16px/1.55 ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+    -webkit-text-size-adjust: 100%;
+  }
+  .envoltorio { max-width: 60rem; margin: 0 auto; padding: 1.5rem 16px 4rem; }
+  h1 { font-size: 1.5rem; line-height: 1.2; margin: 0 0 .25rem; }
+  h2 { font-size: 1.15rem; margin: 2.5rem 0 .25rem; }
+  h3 { font-size: .95rem; margin: 1.25rem 0 .25rem; color: var(--ink-2); }
+  p { margin: .5rem 0; }
+  .sub { color: var(--ink-2); font-size: .9rem; margin: 0 0 1.5rem; }
+  .tarjeta {
+    background: var(--surface-1); border: 1px solid var(--border);
+    border-radius: 10px; padding: 1.1rem 1.2rem; margin: 1rem 0;
+  }
+  .titular { display: flex; flex-wrap: wrap; gap: 1.5rem; align-items: flex-start; }
+  .titular .cifra { flex: 1 1 11rem; }
+  .cifra .n { font-size: clamp(2.6rem, 11vw, 3.8rem); font-weight: 650;
+              line-height: 1; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+  .cifra .q { color: var(--ink-2); font-size: .9rem; margin-top: .35rem; }
+  .estres { flex: 2 1 20rem; }
+  .estres ul { margin: .35rem 0 0; padding-left: 1.1rem; }
+  .estres li { margin: .3rem 0; }
+  table { border-collapse: collapse; width: 100%; font-size: .9rem; }
+  caption { text-align: left; color: var(--ink-2); font-size: .85rem;
+            padding-bottom: .4rem; }
+  th, td { text-align: right; padding: .35rem .5rem; border-bottom: 1px solid var(--border); }
+  th:first-child, td:first-child { text-align: left; }
+  thead th { color: var(--ink-2); font-weight: 600; font-size: .8rem; }
+  td.num { font-variant-numeric: tabular-nums; }
+  .pastilla { display: inline-block; width: .7rem; height: .7rem; border-radius: 2px;
+              margin-right: .4rem; vertical-align: baseline; }
+  .leyenda { display: flex; flex-wrap: wrap; gap: .25rem 1rem; margin: .5rem 0 0;
+             font-size: .85rem; color: var(--ink-2); }
+  .nota { color: var(--ink-3); font-size: .82rem; }
+  .aviso { background: var(--aviso-bg); border-left: 3px solid var(--aviso);
+           padding: .6rem .8rem; border-radius: 4px; margin: .75rem 0;
+           font-size: .88rem; }
+  .grave { background: var(--grave-bg); border-left: 3px solid var(--grave);
+           padding: .6rem .8rem; border-radius: 4px; margin: .75rem 0;
+           font-size: .88rem; }
+  .hueco td { color: var(--ink-2); }
+  .etiqueta { font-size: .72rem; text-transform: uppercase; letter-spacing: .04em;
+              padding: .1rem .4rem; border-radius: 3px; border: 1px solid var(--border);
+              color: var(--ink-2); white-space: nowrap; }
+  .etiqueta.av { color: var(--grave); border-color: var(--grave); }
+  svg { display: block; width: 100%; height: auto; overflow: visible; }
+  details { margin: .5rem 0; }
+  summary { cursor: pointer; color: var(--ink-2); font-size: .88rem; }
+  footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid var(--border);
+           color: var(--ink-3); font-size: .82rem; }
+  footer p { margin: .3rem 0; }
+  a { color: inherit; text-decoration-color: var(--ink-3); text-underline-offset: 2px; }
+  .cargando { color: var(--ink-3); }
+</style>
+</head>
+<body>
+<div class="envoltorio">
+  <h1>Registro de pronósticos · generales del 29 de noviembre de 2026</h1>
+  <p class="sub">Esta página sólo muestra lo que está escrito en el
+    <a href="https://github.com/eduardotejero/encuestas-registro">registro público</a>:
+    una foto por día, sellada y con fecha verificable. No recalcula nada.
+    Si un día falta, se dibuja el hueco.</p>
+
+  <div id="cuerpo"><p class="cargando">Cargando el registro…</p></div>
+
+  <footer>
+    <p><strong>Proyecto personal e independiente.</strong> No es un servicio de
+      NM Tech Consulting ni de ninguna otra empresa, y no está encargado ni
+      patrocinado por nadie.</p>
+    <p>Encuestas: Wikipedia (EN), CC BY-SA 4.0, con enlace al artículo original
+      de cada una. Resultados electorales: Ministerio del Interior.</p>
+    <p id="generado"></p>
+  </footer>
+</div>
+
+<script>
+const ORDEN = ["PP", "PSOE", "Podemos", "Vox", "FA", "Sumar"];
+const col = p => `var(--c-${p}, var(--ink-2))`;
+const n1 = v => (v == null ? "—" : v.toFixed(1).replace(".", ","));
+const pct = v => (v == null ? "—" : (100 * v).toFixed(1).replace(".", ",") + " %");
+const esc = s => String(s == null ? "" : s).replace(/[&<>"]/g,
+  c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const fecha = s => new Date(s + "T12:00:00").toLocaleDateString("es-ES",
+  { day: "numeric", month: "short" });
+
+fetch("datos/index.json", { cache: "no-cache" })
+  .then(r => r.json()).then(pintar)
+  .catch(e => document.getElementById("cuerpo").innerHTML =
+    '<div class="grave">No se ha podido leer el índice del registro: ' +
+    esc(e.message) + "</div>");
+
+function pintar(ix) {
+  const partes = [];
+  document.getElementById("generado").textContent =
+    "Página generada el " + ix.generado_utc + " (UTC) a partir del registro.";
+
+  if (ix.apagon.activo) {
+    partes.push(`<div class="grave"><strong>Apagón electoral.</strong>
+      Desde el ${esc(ix.apagon.desde.slice(0, 10))} y hasta el cierre de los
+      colegios no se publica ninguna estimación: ${esc(ix.apagon.base_legal)}
+      Esta página se ha construido <em>sin</em> los datos de estimación, no
+      sólo ocultándolos. Vuelve el 29 de noviembre a las 20:00.</div>`);
+    partes.push(indiceRegistro(ix));
+    document.getElementById("cuerpo").innerHTML = partes.join("");
+    return;
+  }
+
+  const f = ix.portada;
+  if (!f) {
+    partes.push('<div class="grave">Todavía no hay ninguna foto en el ' +
+      "registro.</div>");
+    partes.push(indiceRegistro(ix));
+    document.getElementById("cuerpo").innerHTML = partes.join("");
+    return;
+  }
+
+  partes.push(titular(f, ix));
+  partes.push(grafico(ix.tendencia));
+  partes.push(escanos(f));
+  partes.push(indiceRegistro(ix));
+  partes.push(limitaciones(f));
+  document.getElementById("cuerpo").innerHTML = partes.join("");
+  dibujarLineas(ix.tendencia);
+}
+
+/* --- 1. Titular: probabilidad del bloque y su prueba de estrés ------------ */
+function titular(f, ix) {
+  const st = f.stress || {};
+  const bloque = (f.blocs || {})[st.bloc] || {};
+  const miembros = (st.members || []).join(" + ");
+  const esc_ = (st.scenarios || []).map(s =>
+    `<li>Si las encuestas fallan como en <strong>${esc(s.label)}</strong>
+       (${n1(s.margin_error)} puntos en contra): <strong>${pct(s.p_majority)}</strong>,
+       ${n1(s.mean)} escaños de media.</li>`).join("");
+  const sesgo = (st.known_bias || []).map(b =>
+    `<li>Con nuestro propio sesgo territorial conocido
+       (${esc(b.label)}, ${n1(b.bloc_seat_bias)} escaños):
+       <strong>${pct(b.p_majority)}</strong>, ${n1(b.mean)} de media.</li>`).join("");
+  const dias = f.days_since_newest;
+  return `
+  <div class="tarjeta titular">
+    <div class="cifra">
+      <div class="n">${pct(bloque.p_majority)}</div>
+      <div class="q">probabilidad de que <strong>${esc(miembros)}</strong>
+        sume ${f.majority || 176} escaños o más.<br>
+        ${n1(bloque.mean)} escaños de media (intervalo del 80 %:
+        ${bloque.p10}–${bloque.p90}).</div>
+    </div>
+    <div class="estres">
+      <h3>Y sigue ahí aunque las encuestas fallen</h3>
+      <p class="nota">${esc(st.note || "")}</p>
+      <ul>${esc_}${sesgo}</ul>
+    </div>
+  </div>
+  <p class="nota">Foto del <strong>${fecha(f.date)}</strong>. Encuesta más
+    reciente: ${esc(f.newest_poll || "—")}${dias ? ` (hace ${dias} días)` : ""}.
+    ${f.n_polls} encuestas en la ventana de ${f.window_days} días, vida media
+    ${n1(f.half_life_days)} días (régimen ${esc(f.regime)}).
+    Modelo ${esc(f.model_version)}.</p>
+  <div class="aviso">${esc(f.conditional_on || "")}</div>`;
+}
+
+/* --- 2. Tendencia: sólo los días con foto; los huecos se interrumpen ------ */
+function grafico(serie) {
+  const partidos = ORDEN.filter(p => serie.some(
+    d => d.national && d.national[p] != null));
+  const leyenda = partidos.map(p =>
+    `<span><span class="pastilla" style="background:${col(p)}"></span>${esc(p)}</span>`
+  ).join("");
+  const filas = serie.map(d => {
+    if (!d.national) {
+      return `<tr class="hueco"><td>${fecha(d.date)}</td>
+        <td colspan="${partidos.length}">sin foto (${esc(d.tipo)})</td></tr>`;
+    }
+    return `<tr><td>${fecha(d.date)}</td>` + partidos.map(p =>
+      `<td class="num">${n1(d.national[p])}</td>`).join("") + "</tr>";
+  }).join("");
+  return `
+  <h2>Tendencia del voto estimado</h2>
+  <p class="nota">Cada punto es la cifra que se publicó ese día, no un
+    recálculo de hoy. Los días sin foto cortan la línea: no se interpola.</p>
+  <div class="tarjeta">
+    <div id="lienzo"></div>
+    <div class="leyenda">${leyenda}</div>
+  </div>
+  <details><summary>Ver la tabla de la tendencia</summary>
+    <table><caption>Voto estimado (%) publicado cada día.</caption>
+    <thead><tr><th>Día</th>${partidos.map(p => `<th>${esc(p)}</th>`).join("")}</tr></thead>
+    <tbody>${filas}</tbody></table></details>`;
+}
+
+function dibujarLineas(serie) {
+  const host = document.getElementById("lienzo");
+  if (!host) return;
+  const partidos = ORDEN.filter(p => serie.some(
+    d => d.national && d.national[p] != null));
+  const W = 720, H = 300, M = { t: 14, r: 92, b: 26, l: 34 };
+  const vals = serie.flatMap(d => d.national
+    ? partidos.map(p => d.national[p]).filter(v => v != null) : []);
+  if (!vals.length) return;
+  const max = Math.ceil(Math.max(...vals) / 5) * 5 + 2;
+  const x = i => M.l + i * (W - M.l - M.r) / Math.max(serie.length - 1, 1);
+  const y = v => M.t + (1 - v / max) * (H - M.t - M.b);
+  const ejeY = [];
+  for (let v = 0; v <= max; v += 10) {
+    ejeY.push(`<line x1="${M.l}" x2="${W - M.r}" y1="${y(v)}" y2="${y(v)}"
+      stroke="var(--border)" stroke-width="1"/>
+      <text x="${M.l - 6}" y="${y(v) + 4}" text-anchor="end" font-size="11"
+        fill="var(--ink-3)">${v}</text>`);
+  }
+  // Huecos: banda gris, para que la interrupción se VEA.
+  const bandas = serie.map((d, i) => d.national ? "" :
+    `<rect x="${x(i) - 4}" y="${M.t}" width="8" height="${H - M.t - M.b}"
+       fill="var(--ink-3)" opacity=".13"/>`).join("");
+  const ejeX = serie.map((d, i) =>
+    (i === 0 || i === serie.length - 1 || i % 3 === 0)
+      ? `<text x="${x(i)}" y="${H - 8}" text-anchor="middle" font-size="11"
+          fill="var(--ink-3)">${fecha(d.date)}</text>` : "").join("");
+  // Un trazo por tramo continuo: el hueco rompe la línea de verdad.
+  const trazos = partidos.map(p => {
+    const tramos = [];
+    let actual = [];
+    serie.forEach((d, i) => {
+      const v = d.national ? d.national[p] : null;
+      if (v == null) { if (actual.length) tramos.push(actual); actual = []; }
+      else actual.push([x(i), y(v)]);
+    });
+    if (actual.length) tramos.push(actual);
+    const lineas = tramos.map(t => t.length === 1
+      ? `<circle cx="${t[0][0]}" cy="${t[0][1]}" r="4" fill="${col(p)}"/>`
+      : `<path d="M${t.map(q => q.join(",")).join("L")}" fill="none"
+           stroke="${col(p)}" stroke-width="2" stroke-linecap="round"/>`).join("");
+    const ult = tramos.at(-1)?.at(-1);
+    const rotulo = ult ? `<text x="${ult[0] + 8}" y="${ult[1] + 4}" font-size="12"
+      fill="var(--ink-2)">${esc(p)}</text>` : "";
+    return lineas + rotulo;
+  }).join("");
+  host.innerHTML = `<svg viewBox="0 0 ${W} ${H}" role="img"
+    aria-label="Voto estimado publicado cada día, por partido">
+    ${ejeY.join("")}${bandas}${ejeX}${trazos}</svg>`;
+}
+
+/* --- 3. Escaños: LAS DOS cifras, etiquetadas ------------------------------ */
+function escanos(f) {
+  const defs = f.seats_definitions || {};
+  const filas = (f.seats || []).filter(r => r.central > 0 || r.mean >= 0.5)
+    .map(r => `<tr>
+      <td><span class="pastilla" style="background:${col(r.party)}"></span>${esc(r.party)}</td>
+      <td class="num">${n1((f.national || {})[r.party])}</td>
+      <td class="num"><strong>${n1(r.mean)}</strong></td>
+      <td class="num"><strong>${r.central}</strong></td>
+      <td class="num">${r.p10}–${r.p90}</td></tr>`).join("");
+  return `
+  <h2>Escaños: dos cifras, no una</h2>
+  <p class="nota">No son lo mismo y publicamos las dos. La media de las
+    simulaciones es la cifra del modelo; el reparto del voto central es lo que
+    publican las casas, y es la que hay que usar para compararnos con ellas.</p>
+  <div class="tarjeta">
+    <table>
+      <caption>Foto del ${fecha(f.date)}. Intervalo del 80 % sobre la
+        simulación.</caption>
+      <thead><tr><th>Partido</th><th>Voto %</th><th>E[escaños]<br>(media)</th>
+        <th>Escaños del<br>voto central</th><th>80 %</th></tr></thead>
+      <tbody>${filas}</tbody>
+    </table>
+    <p class="nota">${esc(defs.mean || "")} ${esc(defs.central || "")}</p>
+  </div>`;
+}
+
+/* --- 4. Índice del registro, con los huecos a la vista ------------------- */
+function indiceRegistro(ix) {
+  const filas = ix.dias.map(d => {
+    if (d.tipo === "foto") {
+      return `<tr><td>${fecha(d.date)}</td>
+        <td><span class="etiqueta">foto</span></td>
+        <td>modelo ${esc(d.model_version)}${d.sello ? ", sellada" : ""}</td>
+        <td class="num"><a href="datos/${d.date}.json">JSON</a></td></tr>`;
+    }
+    if (d.tipo === "hueco") {
+      const av = d.clase === "averia";
+      return `<tr class="hueco"><td>${fecha(d.date)}</td>
+        <td><span class="etiqueta ${av ? "av" : ""}">hueco${av ? " · avería" : ""}</span></td>
+        <td colspan="2">${esc(d.motivo || "sin motivo declarado")}</td></tr>`;
+    }
+    return `<tr class="hueco"><td>${fecha(d.date)}</td>
+      <td><span class="etiqueta">pendiente</span></td>
+      <td colspan="2">el día no ha terminado</td></tr>`;
+  }).join("");
+  const r = ix.resumen;
+  return `
+  <h2>El registro, día a día</h2>
+  <p class="nota">${r.fotos} fotos y <strong>${r.huecos} huecos declarados</strong>
+    entre el ${fecha(ix.calendario.desde)} y hoy. Un hueco no se rellena nunca:
+    el día se queda sin foto, con su motivo y su propio sello. Están a la vista
+    a propósito — un registro del que desaparecen los días incómodos no
+    valdría nada.</p>
+  <div class="tarjeta">
+    <table><caption>Del ${fecha(ix.calendario.desde)} al
+      ${fecha(ix.calendario.hasta)} (del 24 al 29 de noviembre no hay fotos:
+      lo prohíbe el artículo 69.7 de la LOREG).</caption>
+      <thead><tr><th>Día</th><th>Qué hay</th><th>Detalle</th><th></th></tr></thead>
+      <tbody>${filas}</tbody></table>
+  </div>`;
+}
+
+/* --- 5. Lo que no se modela, declarado ----------------------------------- */
+function limitaciones(f) {
+  const avisos = (f.barrier_alerts || []).slice(0, 4).map(a =>
+    `<li>${esc(a.message)}</li>`).join("");
+  return `
+  <h2>Lo que este pronóstico no modela</h2>
+  <div class="tarjeta" id="limitaciones">
+    <p class="cargando">Cargando limitaciones declaradas…</p>
+  </div>
+  ${avisos ? `<h3>Avisos de barrera del día</h3>
+    <div class="tarjeta"><ul>${avisos}</ul></div>` : ""}
+  <details><summary>Supuestos de perímetro de esta foto</summary>
+    <div class="tarjeta"><ul>${(f.assumptions || []).map(a =>
+      `<li class="nota">${esc(a)}</li>`).join("")}</ul></div></details>`;
+}
+
+fetch("limitaciones.json", { cache: "no-cache" }).then(r => r.json())
+  .then(l => {
+    const host = document.getElementById("limitaciones");
+    if (!host) return;
+    host.innerHTML = `<p class="nota">Declarado el ${esc(l.fecha)}.</p><ul>` +
+      l.puntos.map(p => `<li><strong>${esc(p.titulo)}:</strong> ${esc(p.texto)}</li>`)
+        .join("") + "</ul>";
+  }).catch(() => {});
+</script>
+</body>
+</html>

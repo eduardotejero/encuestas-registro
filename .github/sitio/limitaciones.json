@@ -1,0 +1,30 @@
+{
+ "fecha": "21 de octubre de 2026",
+ "nota": "Editorial y fechado. Se actualiza a mano cuando cambia lo que el modelo sabe hacer; no sale de ninguna foto.",
+ "puntos": [
+  {
+   "titulo": "Frente Amplio todavía no está en el modelo",
+   "texto": "El 16 de octubre la Junta Electoral Central registró Frente Amplio (Izquierda Unida + Movimiento Sumar + Más Madrid + Comuns) y las encuestadoras han empezado a preguntar por él en lugar de por Sumar. Las fotos publicadas hasta el 15 de octubre son anteriores a ese cambio: miden Sumar. Hasta que el modelo trate Frente Amplio como la papeleta que es, no se publica foto nueva: una estimación que no lo reconozca inflaría a los demás."
+  },
+  {
+   "titulo": "Las coaliciones regionales de la izquierda, tampoco",
+   "texto": "Compromís-Front Valencià (Compromís + Podemos + EUPV + ERPV), Unidad del Pueblo Canario (Podemos + Nueva Canarias + IU + Sumar) y Ara MÉS-Front Ampli en Baleares concurren en lugar de las marcas estatales en sus territorios. En Cataluña, Podemos no presenta lista y apoya a ERC, así que el voto que una encuesta atribuye a Podemos allí no va a ninguna papeleta de Podemos. El perímetro del modelo todavía no tiene dimensión territorial: es un cambio de estructura, pendiente de la proclamación de candidaturas del 27 de octubre."
+  },
+  {
+   "titulo": "Ciudadanos vuelve y no se proyecta",
+   "texto": "Concurre sólo en Madrid y Barcelona, dentro de «Democracia para el siglo 21», y las encuestas no le dan columna propia. El modelo no lo proyecta. Si alguna casa empieza a publicarlo, su voto tendría que confinarse a esas dos circunscripciones: cero estructural en las otras cincuenta."
+  },
+  {
+   "titulo": "«Existe» ya no es un partido de una provincia",
+   "texto": "Teruel Existe y Aragón Existe concurren juntos en toda Aragón. La limitación conocida de los partidos provinciales invisibles para el modelo se escribió pensando en el Teruel Existe de 2019 y ya no describe este caso."
+  },
+  {
+   "titulo": "Las probabilidades son condicionales",
+   "texto": "Suponen que el error conjunto de las encuestas es del tamaño que tuvo entre 2015 y 2023. Un fallo sistémico mayor que ése —todas las casas equivocándose a la vez más de lo que lo hicieron en esas cinco elecciones— no está dentro del modelo. La prueba de estrés del titular es justamente eso: cuánto aguanta la conclusión si el sector vuelve a fallar como entonces."
+  },
+  {
+   "titulo": "La cobertura es ancha a propósito",
+   "texto": "El intervalo del 80 % cubre entre el 89 y el 91 % de los casos en el backtest: es conservador. No se estrecha antes del 29-N. Equivocarse por ancho es más barato que por estrecho."
+  }
+ ]
+}

@@ -1,35 +1,59 @@
-# Vigía del registro: comprueba desde FUERA del host que cada día tiene su
-# foto. Ver .github/vigia.py (y sus pruebas, .github/test_vigia.py).
+# Vigía del registro + sitio público estático (GitHub Pages).
 #
-# No se contenta con "foto o hueco": un hueco por avería avisa el primer
-# día, y más de dos huecos seguidos avisan aunque sean operativos. Si no,
-# una ingesta que reventase cada día dejaría un hueco cada día y el vigía
-# callaría: el mismo fallo que debe detectar lo satisfaría.
+# VIGÍA: comprueba desde FUERA del host que cada día tiene su foto. No se
+# contenta con "foto o hueco": un hueco por avería avisa el primer día, y más
+# de dos huecos seguidos avisan aunque sean operativos. Si no, una ingesta que
+# reventase cada día dejaría un hueco cada día y el vigía callaría.
+# Ver .github/vigia.py y .github/test_vigia.py.
 #
-# El cron de GitHub va en UTC y no sigue el cambio de hora: corre a las
-# 07:15 y 08:15 UTC y es el script el que decide en hora peninsular
-# (exige el día de hoy desde las 09:00 Europe/Madrid).
-name: vigía del registro
+# SITIO: se construye desde el registro y se publica en Pages. Ver
+# .github/construir_sitio.py y .github/test_sitio.py.
+#
+# POR QUÉ CADA HORA: el apagón del artículo 69.7 de la LOREG empieza el
+# 24-nov-2026 a las 00:00 Europe/Madrid, y desde ese instante el sitio no
+# puede servir datos de estimación. En un sitio estático eso se resuelve
+# construyendo SIN los datos, y la construcción la dispara este cron, que
+# GitHub no garantiza puntual. Cada hora acota la ventana a menos de una
+# hora; el 23-nov por la noche conviene además lanzarlo a mano.
+#
+# El cron va en UTC y no sigue el cambio de hora; es el script el que decide
+# en hora peninsular.
+name: vigía y sitio
 
 on:
   schedule:
-    - cron: "15 7,8 * * *"
+    - cron: "5 * * * *"
+  push:
+    branches: [main]
+    paths:
+      - "registro/**"
+      - ".github/**"
   workflow_dispatch:
 
 permissions:
   contents: read
   issues: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
 
 jobs:
   vigia:
     runs-on: ubuntu-latest
+    outputs:
+      outcome: ${{ steps.check.outcome }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Probar el propio vigía
-        run: python .github/test_vigia.py
+      - name: Probar el vigía y el constructor del sitio
+        run: |
+          python .github/test_vigia.py
+          python .github/test_sitio.py
       - name: Comprobar fotos y huecos
         id: check
         continue-on-error: true
@@ -40,7 +64,6 @@ jobs:
           SUMMARY: ${{ steps.check.outputs.summary }}
           MISSING: ${{ steps.check.outputs.missing }}
           BROKEN: ${{ steps.check.outputs.broken }}
-          STREAK: ${{ steps.check.outputs.streak }}
         run: |
           gh label create "vigía" --color B60205 \
             --description "El registro no está saliendo" 2>/dev/null || true
@@ -50,7 +73,11 @@ jobs:
 
           Ejecución: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
             if [ -n "$open" ]; then
-              gh issue comment "$open" --body "$body"
+              # Un comentario por día basta: si ya hay uno de hoy, calla.
+              hoy=$(date -u +%F)
+              ultimo=$(gh issue view "$open" --json comments \
+                --jq "[.comments[] | select(.createdAt | startswith(\"$hoy\"))] | length")
+              [ "$ultimo" = "0" ] && gh issue comment "$open" --body "$body" || true
             else
               titulo="Registro: no está saliendo"
               [ -n "$MISSING" ] && titulo="Registro: faltan fotos ($MISSING)"
@@ -60,8 +87,50 @@ jobs:
           elif [ -n "$open" ]; then
             gh issue close "$open" --comment "Todo en orden: cada día exigible tiene foto, o un hueco operativo declarado y ninguna racha larga."
           fi
-      - name: Fallar si el registro no está saliendo
-        if: steps.check.outcome == 'failure'
+
+  sitio:
+    runs-on: ubuntu-latest
+    needs: vigia
+    environment:
+      name: github-pages
+      url: ${{ steps.desplegar.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Construir el sitio desde el registro
+        run: python .github/construir_sitio.py _sitio
+      - name: Comprobar que en apagón no se sirve ninguna estimación
+        # Cinturón y tirantes: si la construcción fuese en apagón y se
+        # hubiera colado un fichero de foto, el despliegue no sale.
         run: |
-          echo "::error::${{ steps.check.outputs.summary }}"
+          python - <<'FIN'
+          import json, pathlib, sys
+          ix = json.loads(pathlib.Path("_sitio/datos/index.json").read_text(encoding="utf-8"))
+          if ix["apagon"]["activo"]:
+              sobran = [str(p) for p in pathlib.Path("_sitio/datos").glob("2026-*.json")]
+              if sobran or ix["portada"] or ix["tendencia"]:
+                  sys.exit(f"APAGÓN ACTIVO y el sitio lleva estimación: {sobran}")
+              print("apagón activo: sitio sin datos de estimación, correcto")
+          else:
+              print("apagón inactivo: sitio completo")
+          FIN
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _sitio
+      - id: desplegar
+        uses: actions/deploy-pages@v4
+
+  # El fallo del vigía se marca AL FINAL, para que el sitio se publique
+  # igualmente: cuando el registro no sale es cuando más falta hace que la
+  # página muestre los huecos.
+  avisar:
+    runs-on: ubuntu-latest
+    needs: [vigia, sitio]
+    if: always() && needs.vigia.outputs.outcome == 'failure'
+    steps:
+      - run: |
+          echo "::error::El registro no está saliendo; ver el issue con la etiqueta vigía."
           exit 1
