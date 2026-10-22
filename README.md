@@ -140,6 +140,76 @@ hash completo: lleva sólo `model_fingerprint` (16 caracteres hexadecimales,
 los siguientes. **No se ha reemitido ni se reemitirá**: un registro que se
 corrige cuando conviene no prueba nada.
 
+## FE DE ERRATAS
+
+Errores en fotos ya publicadas. **Ninguna se reemite**: el fichero se queda
+como salió y el error se declara aquí. Eso es lo que significa inmutable, y
+si costase menos no probaría nada.
+
+### 1. El bloque de izquierda de la foto del 22 de octubre está mal
+
+`forecast.blocs.izquierda` publica `["PSOE", "Sumar", "Podemos"]`, con media
+**108,5** escaños. Está mal de dos maneras:
+
+- **Sumar no existe en esa foto.** Se retiró del modelo el 16 de octubre,
+  cuando su espacio pasó a Frente Amplio; no tiene voto estimado en la foto
+  del 22 y por tanto suma cero.
+- **Faltan Frente Amplio y Compromís-Front Valencià**, que son la izquierda
+  de esta convocatoria y sí tienen voto y escaños en esa misma foto.
+
+La aritmética lo confirma: 108,5 es PSOE (107,1) + Podemos (1,4). La suma
+correcta del reparto central es **124** escaños. El error arrastra a
+`forecast.blocs["izquierda+nacionalistas"]`, que publica 133,3.
+
+**Alcance: sólo la foto del 22 de octubre.** Las del 12 al 15 publican la
+misma lista y son correctas, porque entonces Sumar sí existía y FA y FV no.
+Entre el 16 y el 21 no hay fotos (seis huecos declarados).
+
+**No afecta al titular.** `forecast.stress` y el titular hablan de PP+Vox,
+cuyos miembros sí son correctos en esa foto. La probabilidad publicada
+(95,77 %) no depende de esto.
+
+**Causa.** La composición de los bloques era una lista de nombres escrita a
+mano, y nadie la tocó al retirar Sumar y añadir FA y FV. En el mismo
+artefacto había dos definiciones de bloque incoherentes: esa lista y el
+atributo `bloc` de cada partido, que sí era correcto. Desde el esquema 4 la
+composición por categoría se DERIVA del atributo del partido, los bloques
+nombrados se comprueban contra el diccionario de partidos, y
+`forecast.blocs_definitions` dice de dónde sale cada uno.
+
+### 2. El voto nacional que hace falta para un escaño va redondeado a la baja
+
+En `forecast.barrier_alerts`, los campos `needed_national` y `distance` se
+redondean al segundo decimal **al más cercano**, así que pueden quedarse por
+debajo del valor exacto. El enunciado «con X % de voto nacional ganaría un
+escaño en esa provincia» es entonces falso justo en X: hace falta una
+milésima más.
+
+**Alcance medido sobre la foto del 22 de octubre: 9 de los 16 avisos.** El
+defecto máximo es de **cinco milésimas de punto** de voto nacional, dos
+órdenes de magnitud por debajo del error de la media de encuestas (≈1,3
+puntos), así que no cambia ninguna lectura; pero el número publicado no
+cumple lo que su propia frase dice. Afecta a todas las fotos, porque la
+convención es la misma desde el 12 de octubre.
+
+**Corregido a partir del esquema 4**: estas distancias se redondean A TECHO,
+que es la única convención con la que «súmale esto y se lo lleva» es cierta.
+
+### Lo que se comprobó y NO era un error
+
+- **Las cifras cableadas en las limitaciones de la foto del 22** (el 0,78 de
+  peso con sesgo calibrado, el 1,0 % y la sigma de 1,2 de Aliança.cat, su
+  «un tercio de simulaciones a cero») son todas correctas para esa foto:
+  `bias_correction.overall` da 0,782 y la fracción de simulaciones con cero
+  escaños medida es 0,336. Eran frágiles —habrían caducado al día
+  siguiente—, y por eso desde el 23 de octubre esas limitaciones remiten a
+  los campos calculados de la propia foto en vez de repetir cifras. Pero no
+  contradicen nada de lo publicado.
+- **El aspirante que competía contra sí mismo** (cuando el último cociente
+  adjudicado y el primero excluido son del mismo partido) no afecta a
+  `barrier_alerts`: esos avisos sólo se calculan para provincias donde el
+  partido no tiene ningún escaño, así que el caso no puede darse.
+
 ## Lo que NO hay aquí, a propósito
 
 - **Nada anterior al 12 de octubre de 2026.** El registro no se rellena

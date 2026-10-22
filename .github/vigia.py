@@ -29,6 +29,19 @@ que hay tres reglas, no una:
      de la pasarela de una red de Docker ajena: si alguien recrea esa red, la
      IP cambia y la web da 502 EN SILENCIO (ver deploy/PLAN-VPS.md).
 
+  5. CÓDIGO VIEJO: la última foto se hizo con un clon que iba por detrás del
+     repositorio. El 22-oct-2026 la foto salió con tres commits de retraso
+     (al final del día eran nueve) porque el publicador vive en un clon que
+     se actualiza a mano: salió sin la limitación que se había escrito esa
+     noche, sin la tabla del recorte y con los avisos de barrera viejos. La
+     foto lo dice todo, pero nadie lo miraba.
+
+     El número lo pone el publicador (`code_behind`), no este vigía: el
+     código es PRIVADO y desde el repositorio del registro no se puede leer
+     su `origin/main`. Aquí sólo se lee lo que la foto declara. No bloquea
+     nada: una foto con retraso es mejor que ninguna, pero deja de ser
+     invisible.
+
 Calendario: del 12-oct al 23-nov de 2026 (el apagón del art. 69.7 LOREG no
 es hueco). El día de hoy sólo se exige a partir de las 09:00 Europe/Madrid
 (la foto es a las 07:00, más margen).
@@ -75,6 +88,39 @@ def expected(now: datetime) -> list[date]:
     return [START + timedelta(days=i) for i in range((last - START).days + 1)]
 
 
+def codigo_de_la_ultima_foto(root: Path, dias: list[date]) -> dict | None:
+    """Qué dice la foto más reciente sobre el código que la hizo.
+
+    `code_behind` lo publica el publicador (esquema 4). En fotos anteriores
+    no existe: entonces no se puede afirmar nada y no se avisa, que es
+    distinto de afirmar que estaba al día.
+    """
+    for d in reversed(dias):
+        p = root / "registro" / f"{d:%Y}" / f"{d.isoformat()}.json"
+        if not p.exists():
+            continue
+        try:
+            foto = json.loads(p.read_text(encoding="utf-8"))
+        except ValueError:
+            return {"date": d, "behind": None, "commit": None,
+                    "motivo": "la foto no se puede leer"}
+        return {"date": d, "behind": foto.get("code_behind"),
+                "commit": (foto.get("code_commit") or "")[:12],
+                "schema": foto.get("schema")}
+    return None
+
+
+def _texto_codigo(cod: dict | None) -> str:
+    """«sin declarar» no es «al día»: una foto de esquema 3 no lo dice."""
+    if not cod:
+        return "sin foto"
+    if cod.get("behind") == 0:
+        return "al día"
+    if cod.get("behind"):
+        return f"{cod['behind']} commits por detrás"
+    return "sin declarar"
+
+
 def _gap(root: Path, d: date) -> dict | None:
     p = root / "registro" / f"{d:%Y}" / f"{d.isoformat()}.hueco.json"
     if not p.exists():
@@ -108,7 +154,8 @@ def audit(root: Path, now: datetime) -> dict:
     # que alarma. `peor_racha` es historia y sólo se imprime.
     return {"dias": len(dias), "missing": missing, "broken": broken,
             "streak": racha, "streak_end": dias[-1] if dias and racha else None,
-            "peor_racha": peor_racha, "peor_racha_fin": fin_racha}
+            "peor_racha": peor_racha, "peor_racha_fin": fin_racha,
+            "codigo": codigo_de_la_ultima_foto(root, dias)}
 
 
 def summarize(a: dict) -> tuple[bool, str]:
@@ -127,6 +174,16 @@ def summarize(a: dict) -> tuple[bool, str]:
                       "aunque cada día se haya declarado como operativo. La "
                       "racha SIGUE ABIERTA: no hay foto del último día "
                       "exigible.")
+    cod = a.get("codigo")
+    if cod and cod.get("behind"):
+        lineas.append(
+            f"La foto del {cod['date']} se hizo con código VIEJO: "
+            f"{cod['behind']} commits por detrás de origin/main "
+            f"(code_commit {cod['commit']}). El publicador vive en un clon "
+            f"que se actualiza a mano; desplegar es `git pull` en el clon Y "
+            f"reiniciar la tarea. La foto es válida y no se reemite, pero "
+            f"no lleva lo que se arregló después.")
+
     web = a.get("web")
     if web and web.get("vigilar") and web["estado"] not in (None, 200):
         lineas.append(
@@ -178,8 +235,8 @@ def main() -> int:
           f"{a['dias']} días exigibles; racha vigente sin foto {a['streak']} "
           f"(máxima histórica {a['peor_racha']}"
           + (f", hasta el {a['peor_racha_fin']}" if a["peor_racha_fin"] else "")
-          + "); "
-          f"web {web.get('detalle') or web['estado']}"
+          + f"); código de la última foto: {_texto_codigo(a.get('codigo'))}; "
+          + f"web {web.get('detalle') or web['estado']}"
           + ("" if web.get("vigilar") else
              f" (NO vigilada: {web.get('motivo')})"))
     print(texto or "todo en orden: cada día exigible tiene foto, o un hueco "

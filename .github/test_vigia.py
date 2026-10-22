@@ -177,6 +177,36 @@ a2 = vigia.audit(montar(d2), ahora("2026-10-22T09:15+02:00"))
 check("una racha abierta hasta hoy sigue avisando",
       vigia.summarize(a2)[0] and a2["streak"] == 3)
 
+# 13. CÓDIGO VIEJO. La causa común de los tres fallos del 22-oct: el
+#     publicador puede ir por detrás del repositorio sin que nadie se entere.
+#     La foto declara `code_behind`; el vigía lo hace visible, sin bloquear.
+def con_codigo(behind, schema=4):
+    root = montar(dias_hasta("2026-10-22", "foto"))
+    p = root / "registro" / "2026" / "2026-10-22.json"
+    foto = {"schema": schema, "date": "2026-10-22",
+            "code_commit": "abc123def456789", "model_version": "2026.10.6"}
+    if behind is not None:
+        foto["code_behind"] = behind
+    p.write_text(json.dumps(foto), encoding="utf-8")
+    return vigia.audit(root, ahora("2026-10-22T09:15+02:00"))
+
+
+a = con_codigo(0)
+check("código al día no avisa", not vigia.summarize(a)[0])
+check("y lo dice en el log", vigia._texto_codigo(a["codigo"]) == "al día")
+
+a = con_codigo(9)
+mal, texto = vigia.summarize(a)
+check("nueve commits de retraso avisan", mal and "código VIEJO" in texto)
+check("el aviso dice cuántos y qué commit",
+      "9 commits" in texto and "abc123def456" in texto)
+check("y dice que la foto NO se reemite", "no se reemite" in texto)
+
+a = con_codigo(None, schema=3)
+check("una foto que no lo declara no avisa", not vigia.summarize(a)[0])
+check("«sin declarar» no es «al día»",
+      vigia._texto_codigo(a["codigo"]) == "sin declarar")
+
 conf = json.loads((Path(__file__).parent / "vigia-web.json")
                   .read_text(encoding="utf-8"))
 check("vigia-web.json declara url, vigilar y motivo",
