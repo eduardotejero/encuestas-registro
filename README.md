@@ -132,6 +132,50 @@ misma razón que el registro del 12-oct: un registro que se corrige cuando
 conviene no prueba nada. Queda escrito aquí, que es lo único honesto que se
 puede hacer con ellas.
 
+### Y el conjunto de ficheros comprometidos era incompleto hasta el 22 de octubre
+
+Segunda debilidad de la misma promesa, distinta de la anterior y encontrada el
+22-oct-2026. La huella se calculaba sobre una lista de ficheros mantenida a
+mano, y a esa lista le faltaban cuatro módulos que sí deciden cifras:
+
+| Módulo | Qué decide |
+|---|---|
+| `app/ingest/load.py` | **qué fila** de una encuesta entra (cuando una trae varias proyecciones) |
+| `app/ingest/fetch.py` | qué HTML llega al analizador |
+| `app/models.py` | las columnas donde viven las filas de encuesta |
+| `app/db.py` | el tipo por omisión de una encuestadora, que decide si pesa |
+
+Qué significa para las fotos del 12 al 22 de octubre de 2026, dicho sin
+adornos: **alguien podría cambiar `load.py`, reproducir exactamente la misma
+huella y obtener cifras distintas.** El compromiso era más débil de lo que
+este README prometía.
+
+Lo que NO significa:
+
+- **no hace falsa ninguna cifra publicada.** Es la fuerza de la garantía lo
+  que era menor, no el número;
+- **y la laguna está a la vista en la propia foto**, no escondida aquí: cada
+  foto publica `model_fingerprint_files`, la lista exacta de lo que se
+  hasheó. Quien abra la del 22-oct cuenta 25 entradas y comprueba que
+  `app/ingest/load.py` no está entre ellas. La comprobación es del lector, no
+  de nuestra palabra.
+
+No es casualidad que se encontrara ese día: **ese mismo día** un cambio en
+`load.py` (excluir las encuestas del CIS que no traen estimación propia) movió
+una cifra publicada, y la huella no veía el fichero. Se movió de todas formas
+porque el cambio tocaba además un módulo que sí estaba cubierto. Por
+casualidad.
+
+Corregido el 22-oct-2026 en el modelo **2026.10.7**: la lista pasa de 25 a 31
+ficheros —cuatro son los de la tabla y los otros dos son módulos nuevos que
+la parte *derivada* de la huella (todo `app/seats/*.py`) recogió ella sola,
+que es justamente el contraste— y lo que la mantiene cerrada ya no es una
+lista sino una
+comprobación derivada del grafo de importación —si el código del modelo
+importa un módulo, ese módulo está hasheado o declarado con el motivo por el
+que no puede cambiar una cifra—. **Las fotos afectadas no se reemiten**, por
+la misma razón que todo lo demás de esta página.
+
 ## El primer registro (12 de octubre) es más débil, y se queda así
 
 El registro del 12-oct-2026 se escribió antes de que el formato incluyera el
