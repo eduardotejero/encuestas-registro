@@ -12,8 +12,17 @@ que hay tres reglas, no una:
   1. FALTA: un día del calendario operativo sin foto y sin hueco declarado.
   2. AVERÍA: un hueco cuya clase es `averia` (el publicador estaba en marcha
      y falló). Avisa desde el PRIMER día.
-  3. RACHA: más de MAX_RACHA huecos consecutivos, sean de la clase que sean.
-     Un host que no vuelve en tres días no es un incidente operativo.
+  3. RACHA: más de MAX_RACHA huecos consecutivos **que lleguen hasta hoy**,
+     sean de la clase que sean. Un host que no vuelve en tres días no es un
+     incidente operativo.
+
+     Es la racha VIGENTE, no la máxima histórica. Con la máxima, la racha
+     del 16 al 21 de octubre dejaba el vigía en rojo para siempre: no podía
+     bajar de 6 nunca, así que a partir del 22-oct el vigía fallaba cada
+     hora aunque la foto saliera, y un aviso que siempre está encendido no
+     avisa de nada. Lo que la regla quiere detectar es una máquina que NO
+     VUELVE, y una foto nueva es la prueba de que volvió. La máxima
+     histórica se sigue imprimiendo en el log, como dato, no como alarma.
   4. WEB: la web pública no responde 200. El vigía miraba el registro y no la
      web, y ése es justo el hueco que costó seis días: algo que se cae y nadie
      se entera. Importa especialmente porque el proxy del VPS apunta a la IP
@@ -95,8 +104,11 @@ def audit(root: Path, now: datetime) -> dict:
         racha += 1
         if racha > peor_racha:
             peor_racha, fin_racha = racha, d
+    # `racha` quedó con la que llega hasta el último día exigible: ésa es la
+    # que alarma. `peor_racha` es historia y sólo se imprime.
     return {"dias": len(dias), "missing": missing, "broken": broken,
-            "streak": peor_racha, "streak_end": fin_racha}
+            "streak": racha, "streak_end": dias[-1] if dias and racha else None,
+            "peor_racha": peor_racha, "peor_racha_fin": fin_racha}
 
 
 def summarize(a: dict) -> tuple[bool, str]:
@@ -112,7 +124,9 @@ def summarize(a: dict) -> tuple[bool, str]:
     if a["streak"] > MAX_RACHA:
         lineas.append(f"{a['streak']} días seguidos sin foto hasta el "
                       f"{a['streak_end']}: más de {MAX_RACHA} es una avería, "
-                      "aunque cada día se haya declarado como operativo.")
+                      "aunque cada día se haya declarado como operativo. La "
+                      "racha SIGUE ABIERTA: no hay foto del último día "
+                      "exigible.")
     web = a.get("web")
     if web and web.get("vigilar") and web["estado"] not in (None, 200):
         lineas.append(
@@ -161,7 +175,10 @@ def main() -> int:
     mal, texto = summarize(a)
     web = a["web"]
     print(f"ahora {now.isoformat(timespec='minutes')} (Europe/Madrid); "
-          f"{a['dias']} días exigibles; racha máxima sin foto {a['streak']}; "
+          f"{a['dias']} días exigibles; racha vigente sin foto {a['streak']} "
+          f"(máxima histórica {a['peor_racha']}"
+          + (f", hasta el {a['peor_racha_fin']}" if a["peor_racha_fin"] else "")
+          + "); "
           f"web {web.get('detalle') or web['estado']}"
           + ("" if web.get("vigilar") else
              f" (NO vigilada: {web.get('motivo')})"))

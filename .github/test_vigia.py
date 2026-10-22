@@ -153,6 +153,30 @@ check("un nombre que aún no resuelve no avisa", not con_web(None)[0])
 check("registro y web son avisos distintos",
       "dos fallos distintos" in con_web(502)[1])
 
+# 11. EL CASO REAL DEL 22-OCT. Seis huecos del 16 al 21 y foto el 22: la
+#     racha ya está CERRADA, la máquina volvió, y el vigía tiene que estar
+#     verde. Con la racha máxima histórica no podía bajar de 6 nunca, así
+#     que el vigía fallaba cada hora hasta el 23-nov y dejaba de avisar de
+#     nada. Un aviso permanentemente encendido no es un aviso.
+d = dias_hasta("2026-10-22", "foto")
+for x in ("2026-10-16", "2026-10-17", "2026-10-18",
+          "2026-10-19", "2026-10-20", "2026-10-21"):
+    d[x] = "operativo"
+a = vigia.audit(montar(d), ahora("2026-10-22T09:15+02:00"))
+mal, texto = vigia.summarize(a)
+check("una racha larga YA CERRADA no deja el vigía en rojo", not mal)
+check("la racha histórica se sigue contando, como dato", a["peor_racha"] == 6)
+check("la racha vigente es cero cuando hay foto hoy", a["streak"] == 0)
+
+# 12. Y si la racha llega hasta hoy, sigue avisando: la regla no se ha
+#     ablandado, sólo se ha anclado al presente.
+d2 = dias_hasta("2026-10-22", "foto")
+for x in ("2026-10-20", "2026-10-21", "2026-10-22"):
+    d2[x] = "operativo"
+a2 = vigia.audit(montar(d2), ahora("2026-10-22T09:15+02:00"))
+check("una racha abierta hasta hoy sigue avisando",
+      vigia.summarize(a2)[0] and a2["streak"] == 3)
+
 conf = json.loads((Path(__file__).parent / "vigia-web.json")
                   .read_text(encoding="utf-8"))
 check("vigia-web.json declara url, vigilar y motivo",

@@ -10,7 +10,7 @@
   "el vhost. Hace falta porque el proxy apunta a la IP de la pasarela de una",
   "red de Docker ajena: si alguien recrea esa red, la web da 502 EN SILENCIO."
  ],
- "vigilar": false,
+ "vigilar": true,
  "url": "https://encuestas.nmtechconsulting.com/",
- "motivo": "Todavía no se ha desplegado nada en el VPS (21-oct-2026)."
+ "motivo": "Desplegada y sirviendo desde el 21-oct-2026 por la noche; el vigía la mide en 200. Se activa el 22-oct: el motivo por el que estaba en false (no había nada desplegado) ya no existe, y la regla existe precisamente porque el proxy apunta a la pasarela de una red de Docker ajena."
 }
