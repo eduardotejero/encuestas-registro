@@ -1,0 +1,19 @@
+{
+ "class": "averia",
+ "date": "2026-10-26",
+ "detected_at_utc": "2026-10-27T20:37:29+00:00",
+ "evidence": {
+  "class": "averia",
+  "error": {
+   "at": "2026-10-25T00:40:00+00:00",
+   "kind": "programador muerto",
+   "message": "el hilo del programador murió con MemoryError a las 02:40 CEST, en el pliegue del cambio de hora: dentro de la hora repetida, el bucle de apscheduler.job.Job._get_run_times no avanza y asigna memoria sin fin. La máquina estuvo encendida todo el día y la API contestó 200: no hubo foto porque no corrió NINGUNA tarea, no porque el host no estuviera. Arreglado en el commit 0054815 del código."
+  },
+  "heartbeats_utc": null
+ },
+ "host": "edu",
+ "reason": "el publicador estaba en marcha pero la publicación falló (programador muerto): el hilo del programador murió con MemoryError a las 02:40 CEST, en el pliegue del cambio de hora: dentro de la hora repetida, el bucle de apscheduler.job.Job._get_run_times no avanza y asigna memoria sin fin. La máquina estuvo encendida todo el día y la API contestó 200: no hubo foto porque no corrió NINGUNA tarea, no porque el host no estuviera. Arreglado en el commit 0054815 del código.",
+ "rule": "Este día no tiene foto y no la tendrá: el registro no se rellena nunca con una foto reconstruida a posteriori. Los latidos son del propio publicador.",
+ "schema": 3,
+ "type": "hueco"
+}
