@@ -11,7 +11,16 @@ que hay tres reglas, no una:
 
   1. FALTA: un día del calendario operativo sin foto y sin hueco declarado.
   2. AVERÍA: un hueco cuya clase es `averia` (el publicador estaba en marcha
-     y falló). Avisa desde el PRIMER día.
+     y falló). Avisa desde el PRIMER día, y durante DIAS_AVERIA_VIGENTE.
+
+     El plazo no es cosmética. El registro NO se rellena hacia atrás, así que
+     un hueco por avería no se puede reparar NUNCA: queda declarado para
+     siempre. Sin plazo, los huecos del 25 y 26 de octubre dejaban el vigía
+     en rojo cada hora para el resto de la campaña, y eso es exactamente el
+     fallo que la regla 3 ya corrigió más abajo: un aviso que siempre está
+     encendido no avisa de nada, y además entierra al siguiente. Pasado el
+     plazo la avería sigue en el registro y se sigue contando en el log, como
+     dato, no como alarma.
   3. RACHA: más de MAX_RACHA huecos consecutivos **que lleguen hasta hoy**,
      sean de la clase que sean. Un host que no vuelve en tres días no es un
      incidente operativo.
@@ -64,6 +73,11 @@ DUE_HOUR = 9
 #: como operativo. Dos noches con el host apagado son un incidente; tres
 #: días seguidos sin foto son una máquina que no vuelve.
 MAX_RACHA = 2
+#: Días que una AVERÍA sigue encendiendo el aviso, contados hasta el último
+#: día exigible. Tres: el tiempo de verla y actuar. Más no sirve, porque el
+#: hueco no se puede reparar y el aviso se quedaría encendido para siempre
+#: (ver la regla 2 arriba).
+DIAS_AVERIA_VIGENTE = 3
 GAP_AVERIA = "averia"
 #: Web pública. Se comprueba siempre que el nombre resuelva; mientras no
 #: exista, no se avisa (no hay nada que vigilar todavía).
@@ -135,7 +149,12 @@ def _gap(root: Path, d: date) -> dict | None:
 def audit(root: Path, now: datetime) -> dict:
     dias = expected(now)
     missing: list[date] = []       # ni foto ni hueco
-    broken: list[tuple[date, str]] = []   # hueco por avería
+    broken: list[tuple[date, str]] = []   # hueco por avería, DENTRO DEL PLAZO
+    averias: list[date] = []       # todas, incluidas las ya pasadas: log
+    # El plazo se cuenta hacia atrás desde el último día exigible, no desde
+    # `now`: así el vigía dice lo mismo a las 09:00 que a las 23:00.
+    vigente_desde = (dias[-1] - timedelta(days=DIAS_AVERIA_VIGENTE - 1)
+                     if dias else None)
     racha, peor_racha, fin_racha = 0, 0, None
     for d in dias:
         foto = (root / "registro" / f"{d:%Y}" / f"{d.isoformat()}.json").exists()
@@ -146,13 +165,16 @@ def audit(root: Path, now: datetime) -> dict:
         if hueco is None:
             missing.append(d)
         elif hueco.get("class") == GAP_AVERIA:
-            broken.append((d, (hueco.get("reason") or "")[:200]))
+            averias.append(d)
+            if vigente_desde is not None and d >= vigente_desde:
+                broken.append((d, (hueco.get("reason") or "")[:200]))
         racha += 1
         if racha > peor_racha:
             peor_racha, fin_racha = racha, d
     # `racha` quedó con la que llega hasta el último día exigible: ésa es la
     # que alarma. `peor_racha` es historia y sólo se imprime.
     return {"dias": len(dias), "missing": missing, "broken": broken,
+            "averias": averias,
             "streak": racha, "streak_end": dias[-1] if dias and racha else None,
             "peor_racha": peor_racha, "peor_racha_fin": fin_racha,
             "codigo": codigo_de_la_ultima_foto(root, dias)}
@@ -168,6 +190,8 @@ def summarize(a: dict) -> tuple[bool, str]:
                       "hueco.")
     for d, motivo in a["broken"]:
         lineas.append(f"Hueco por AVERÍA el {d.isoformat()}: {motivo}")
+        lineas.append(f"  (este aviso se apaga solo {DIAS_AVERIA_VIGENTE} días "
+                      "después: el hueco no se repara, queda declarado)")
     if a["streak"] > MAX_RACHA:
         lineas.append(f"{a['streak']} días seguidos sin foto hasta el "
                       f"{a['streak_end']}: más de {MAX_RACHA} es una avería, "
@@ -232,7 +256,12 @@ def main() -> int:
     mal, texto = summarize(a)
     web = a["web"]
     print(f"ahora {now.isoformat(timespec='minutes')} (Europe/Madrid); "
-          f"{a['dias']} días exigibles; racha vigente sin foto {a['streak']} "
+          f"{a['dias']} días exigibles; "
+          f"averías declaradas {len(a['averias'])}"
+          + (f" ({' '.join(d.isoformat() for d in a['averias'])}), de ellas "
+             f"{len(a['broken'])} dentro del plazo de aviso"
+             if a["averias"] else "")
+          + f"; racha vigente sin foto {a['streak']} "
           f"(máxima histórica {a['peor_racha']}"
           + (f", hasta el {a['peor_racha_fin']}" if a["peor_racha_fin"] else "")
           + f"); código de la última foto: {_texto_codigo(a.get('codigo'))}; "

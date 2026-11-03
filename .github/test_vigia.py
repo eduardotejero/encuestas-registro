@@ -77,6 +77,28 @@ mal, texto = vigia.summarize(vigia.audit(montar(d),
 check("un hueco por avería avisa desde el primer día",
       mal and "AVERÍA" in texto)
 
+# 4b. EL PLAZO. Una avería vieja, con fotos después, ya NO avisa: el hueco no
+#     se puede reparar (el registro no se rellena hacia atrás), así que sin
+#     plazo el vigía se queda en rojo para siempre y el aviso deja de avisar.
+#     Es el mismo fallo que la regla de la racha ya corrigió.
+d = dias_hasta("2026-10-22", "foto"); d["2026-10-14"] = "averia"
+a = vigia.audit(montar(d), ahora("2026-10-22T09:15+02:00"))
+mal, texto = vigia.summarize(a)
+check("una avería vieja con fotos después no avisa", not mal)
+check("pero sigue contada como histórica", a["averias"] == [date(2026, 10, 14)])
+
+# 4c. Los dos bordes del plazo, derivados de DIAS_AVERIA_VIGENTE y no
+#     escritos a mano: el último día dentro avisa y el primero fuera, no.
+ultimo = date(2026, 10, 22)
+dentro = ultimo - timedelta(days=vigia.DIAS_AVERIA_VIGENTE - 1)
+fuera = ultimo - timedelta(days=vigia.DIAS_AVERIA_VIGENTE)
+for dia, espera in ((dentro, True), (fuera, False)):
+    d = dias_hasta(ultimo.isoformat(), "foto"); d[dia.isoformat()] = "averia"
+    mal, _ = vigia.summarize(vigia.audit(montar(d),
+                                         ahora("2026-10-22T09:15+02:00")))
+    check(f"avería el {dia} ({'dentro' if espera else 'fuera'} del plazo) "
+          f"{'avisa' if espera else 'calla'}", mal is espera)
+
 # 5. LA REGLA QUE IMPORTA: huecos operativos todos los días no callan al
 #    vigía. Es el 15-oct con otro disfraz.
 root = montar(dias_hasta("2026-10-22", "operativo"))
