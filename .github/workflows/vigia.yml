@@ -1,24 +1,32 @@
-# Vigía del registro + sitio público estático (GitHub Pages).
+# Vigía del registro.
 #
 # VIGÍA: comprueba desde FUERA del host que cada día tiene su foto. No se
-# contenta con "foto o hueco": un hueco por avería avisa el primer día, y más
-# de dos huecos seguidos avisan aunque sean operativos. Si no, una ingesta que
-# reventase cada día dejaría un hueco cada día y el vigía callaría.
-# Ver .github/vigia.py y .github/test_vigia.py.
+# contenta con "foto o hueco": un hueco por avería avisa durante unos días, y
+# más de dos huecos seguidos que lleguen hasta hoy avisan aunque sean
+# operativos. Si no, una ingesta que reventase cada día dejaría un hueco cada
+# día y el vigía callaría. Ver .github/vigia.py y .github/test_vigia.py.
 #
-# SITIO: se construye desde el registro y se publica en Pages. Ver
-# .github/construir_sitio.py y .github/test_sitio.py.
+# EL SITIO PÚBLICO SE RETIRÓ (3-nov-2026). Había un job `sitio` que construía
+# una web estática desde el registro y la publicaba en GitHub Pages. Pages
+# nunca se activó en este repositorio, así que ese job falló EN TODAS sus
+# ejecuciones desde que se escribió —`configure-pages` devolvía «Get Pages
+# site failed... Not Found»— y mandaba un correo de fallo cada hora, cada
+# hora, durante semanas. Un workflow que siempre falla no informa de nada y
+# entierra al vigía, que es el que sí importa.
 #
-# POR QUÉ CADA HORA: el apagón del artículo 69.7 de la LOREG empieza el
-# 24-nov-2026 a las 00:00 Europe/Madrid, y desde ese instante el sitio no
-# puede servir datos de estimación. En un sitio estático eso se resuelve
-# construyendo SIN los datos, y la construcción la dispara este cron, que
-# GitHub no garantiza puntual. Cada hora acota la ventana a menos de una
-# hora; el 23-nov por la noche conviene además lanzarlo a mano.
+# Se retira el job, no el constructor: `.github/construir_sitio.py` y su
+# `test_sitio.py` siguen aquí y el test se sigue ejecutando abajo, para que no
+# se podrezca. Si algún día se quiere la web, hay que ACTIVAR Pages en los
+# ajustes del repositorio (o pasarle `enablement: true` a configure-pages) y
+# devolver el job; mientras Pages esté apagado, publicarlo es imposible.
+#
+# POR QUÉ CADA HORA: ya no es por el apagón del sitio, sino por el vigía. Un
+# publicador muerto se detecta dentro de la hora en vez de al día siguiente, y
+# eso es exactamente lo que costó seis días en octubre.
 #
 # El cron va en UTC y no sigue el cambio de hora; es el script el que decide
 # en hora peninsular.
-name: vigía y sitio
+name: vigía
 
 on:
   schedule:
@@ -30,14 +38,14 @@ on:
       - ".github/**"
   workflow_dispatch:
 
+# Sólo lo que el vigía necesita: leer el registro y abrir/comentar/cerrar su
+# issue. `pages: write` e `id-token: write` se fueron con el job del sitio.
 permissions:
   contents: read
   issues: write
-  pages: write
-  id-token: write
 
 concurrency:
-  group: pages
+  group: vigia
   cancel-in-progress: false
 
 jobs:
@@ -88,47 +96,13 @@ jobs:
             gh issue close "$open" --comment "Todo en orden: cada día exigible tiene foto, o un hueco operativo declarado y ninguna racha larga."
           fi
 
-  sitio:
-    runs-on: ubuntu-latest
-    needs: vigia
-    environment:
-      name: github-pages
-      url: ${{ steps.desplegar.outputs.page_url }}
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-      - name: Construir el sitio desde el registro
-        run: python .github/construir_sitio.py _sitio
-      - name: Comprobar que en apagón no se sirve ninguna estimación
-        # Cinturón y tirantes: si la construcción fuese en apagón y se
-        # hubiera colado un fichero de foto, el despliegue no sale.
-        run: |
-          python - <<'FIN'
-          import json, pathlib, sys
-          ix = json.loads(pathlib.Path("_sitio/datos/index.json").read_text(encoding="utf-8"))
-          if ix["apagon"]["activo"]:
-              sobran = [str(p) for p in pathlib.Path("_sitio/datos").glob("2026-*.json")]
-              if sobran or ix["portada"] or ix["tendencia"]:
-                  sys.exit(f"APAGÓN ACTIVO y el sitio lleva estimación: {sobran}")
-              print("apagón activo: sitio sin datos de estimación, correcto")
-          else:
-              print("apagón inactivo: sitio completo")
-          FIN
-      - uses: actions/configure-pages@v5
-      - uses: actions/upload-pages-artifact@v3
-        with:
-          path: _sitio
-      - id: desplegar
-        uses: actions/deploy-pages@v4
-
-  # El fallo del vigía se marca AL FINAL, para que el sitio se publique
-  # igualmente: cuando el registro no sale es cuando más falta hace que la
-  # página muestre los huecos.
+  # El fallo del vigía se marca en un job APARTE y no en el paso que
+  # comprueba (de ahí su `continue-on-error`). Así el resumen de la ejecución
+  # distingue «el vigía no pudo correr» de «el vigía corrió y encontró algo»,
+  # que son dos averías distintas.
   avisar:
     runs-on: ubuntu-latest
-    needs: [vigia, sitio]
+    needs: [vigia]
     if: always() && needs.vigia.outputs.outcome == 'failure'
     steps:
       - run: |
