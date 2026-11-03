@@ -96,15 +96,24 @@ jobs:
             gh issue close "$open" --comment "Todo en orden: cada día exigible tiene foto, o un hueco operativo declarado y ninguna racha larga."
           fi
 
-  # El fallo del vigía se marca en un job APARTE y no en el paso que
-  # comprueba (de ahí su `continue-on-error`). Así el resumen de la ejecución
-  # distingue «el vigía no pudo correr» de «el vigía corrió y encontró algo»,
-  # que son dos averías distintas.
-  avisar:
-    runs-on: ubuntu-latest
-    needs: [vigia]
-    if: always() && needs.vigia.outputs.outcome == 'failure'
-    steps:
-      - run: |
-          echo "::error::El registro no está saliendo; ver el issue con la etiqueta vigía."
-          exit 1
+      # EL AVISO NO HACE FALLAR LA EJECUCIÓN (3-nov-2026).
+      #
+      # Antes había un job `avisar` que hacía `exit 1` cuando el vigía
+      # encontraba algo. Con el cron horario eso es un correo de «workflow
+      # failed» CADA HORA mientras el aviso siga en pie, y los avisos siguen
+      # en pie durante horas o días por su naturaleza: «la última foto se
+      # hizo con código viejo» no se puede apagar hasta la foto siguiente,
+      # porque las fotos no se reemiten. Resultado: 24 correos al día por un
+      # aviso que ya se había leído, y el verdadero se pierde entre ellos.
+      #
+      # LA ALARMA NO SE AFLOJA, CAMBIA DE CANAL. El aviso de verdad es el
+      # ISSUE que abre el paso de arriba, y ese sí está pensado para no
+      # repetirse: un comentario por día como mucho, y se CIERRA solo cuando
+      # todo vuelve a estar en orden. Aquí queda una anotación de warning,
+      # que sale en el resumen de la ejecución y no manda correo.
+      #
+      # Si algún día se quiere otra vez el rojo, el dato está en
+      # `steps.check.outcome`; lo que no se puede es tenerlo cada hora.
+      - name: Dejar el aviso en el resumen, sin tumbar la ejecución
+        if: steps.check.outcome == 'failure'
+        run: echo "::warning::El vigia ha encontrado algo. Esta en el issue con la etiqueta vigia y en el log del paso 'Comprobar fotos y huecos'."
